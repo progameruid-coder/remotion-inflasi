@@ -1,13 +1,13 @@
 import React from 'react';
 import { Composition } from 'remotion';
-import { KineticStyle } from './KineticStyle';
+import { ExplainerStyle } from './ExplainerStyle';
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
       <Composition
         id="InflasiEdu"
-        component={KineticStyle}
+        component={ExplainerStyle}
         durationInFrames={300}
         fps={30}
         width={1080}
