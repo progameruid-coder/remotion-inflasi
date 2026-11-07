@@ -1,16 +1,18 @@
 import React from 'react';
 import { Composition } from 'remotion';
-import { InflationScene } from './InflationScene';
+import { KineticStyle } from './KineticStyle';
 
-export const RemotionRoot: React.FC = () => {
+export const Root: React.FC = () => {
   return (
-    <Composition
-      id="InflasiEdu"
-      component={InflationScene}
-      durationInFrames={1800} // 60 Detik pada 30 FPS
-      fps={30}
-      width={1080}
-      height={1920}
-    />
+    <>
+      <Composition
+        id="InflasiEdu"
+        component={KineticStyle}
+        durationInFrames={300}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+    </>
   );
 };
