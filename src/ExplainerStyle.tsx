@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Audio,
+  Sequence,
   staticFile,
   interpolate,
   spring,
@@ -130,19 +131,19 @@ export const ExplainerStyle: React.FC = () => {
         overflow: 'hidden',
       }}
     >
-            {/* VOICEOVER PER ADENGAN */}
-      {frame >= 0 && frame < 225 && (
+                    {/* VOICEOVER PER ADENGAN */}
+              <Sequence from={0} durationInFrames={225}>
         <Audio src={staticFile('VO1.mp3')} volume={1} />
-      )}
-      {frame >= 225 && frame < 480 && (
-        <Audio src={staticFile('VO2.mp3')} volume={1} startFrom={0} />
-      )}
-      {frame >= 480 && frame < 720 && (
-        <Audio src={staticFile('VO3.mp3')} volume={1} startFrom={0} />
-      )}
-      {frame >= 720 && frame < 900 && (
-        <Audio src={staticFile('VO4.mp3')} volume={1} startFrom={0} />
-      )}
+      </Sequence>
+      <Sequence from={225} durationInFrames={255}>
+        <Audio src={staticFile('VO2.mp3')} volume={1} />
+      </Sequence>
+      <Sequence from={480} durationInFrames={240}>
+        <Audio src={staticFile('VO3.mp3')} volume={1} />
+      </Sequence>
+      <Sequence from={720} durationInFrames={180}>
+        <Audio src={staticFile('VO4.mp3')} volume={1} />
+      </Sequence>
 
       <div style={{ height: 110, display: 'flex', alignItems: 'center' }}>
         <div
