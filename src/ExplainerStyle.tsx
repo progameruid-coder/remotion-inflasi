@@ -555,46 +555,201 @@ export const ExplainerStyle: React.FC = () => {
                 </svg>
 
                 {/* Label Indikator Sabuk Baja */}
-                <div
-                  style={{
-                    position: 'relative',
-                    zIndex: 5,
-                    backgroundColor: 'rgba(15, 23, 42, 0.92)',
-                    padding: '6px 18px',
-                    borderRadius: 8,
-                    border: '1px solid #f59e0b',
-                    fontSize: 15,
-                    fontWeight: 900,
-                    color: '#f59e0b',
-                    letterSpacing: 1,
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.8)',
-                  }}
-                >
-                  STEEL BELT INNER CORE
-                </div>
-              </div>
-
-              {/* Bagian Velg Tengah Ban */}
+        {/* BABAK 3: LAPISAN DEMI LAPISAN KAWAT BAJA (CROSS-SECTION ISOMETRIK) */}
+        {activeIndex === 2 && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Panggung Mekanik Penampang Ban */}
+            <div
+              style={{
+                width: 480,
+                height: 480,
+                backgroundColor: '#0c1322',
+                borderRadius: 28,
+                border: '3px solid #1e293b',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.95)',
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                overflow: 'hidden',
+              }}
+            >
+              {/* Garis Grid Blueprint Pabrik */}
               <div
                 style={{
-                  width: 220,
-                  height: 220,
-                  borderRadius: '50%',
-                  backgroundColor: '#0f172a',
-                  border: '8px solid #475569',
+                  position: 'absolute',
+                  inset: 0,
+                  backgroundImage:
+                    'linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px)',
+                  backgroundSize: '24px 24px',
+                }}
+              />
+
+              {/* Tiga Tumpukan Lapisan Ban (Layer Stack) */}
+              <div
+                style={{
+                  position: 'relative',
+                  width: 360,
+                  height: 320,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: 'inset 0 0 20px rgba(0,0,0,0.8)',
-                  zIndex: 2,
                 }}
               >
-                <div style={{ fontSize: 16, color: '#94a3b8', fontWeight: 800 }}>RANGKA DALAM</div>
-                <div style={{ fontSize: 24, color: '#38bdf8', fontWeight: 900 }}>BAN RADIAL</div>
+                {/* 1. LAPISAN ATAS: KARET TAPAK LUAR (TREAD RUBBER) */}
+                <div
+                  style={{
+                    width: 340,
+                    height: 55,
+                    backgroundColor: '#18181b',
+                    border: '3px solid #3f3f46',
+                    borderRadius: 12,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-around',
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.8)',
+                    zIndex: 5,flexDirection: 'column',
+                    transform: `translateY(${interpolate(sceneProgress, [0, 80], [-80, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })}px)`,
+                  }}
+                >
+                  {[0, 1, 2, 3, 4, 5].map((g) => (
+                    <div
+                      key={`tread-bar-${g}`}
+                      style={{
+                        width: 28,
+                        height: 24,
+                        backgroundColor: '#27272a',
+                        borderRadius: 4,
+                        border: '1.5px solid #52525b',
+                      }}
+                    />
+                  ))}
+                  <span
+                    style={{
+                      position: 'absolute',
+                      right: -10,
+                      top: -24,
+                      fontSize: 12,
+                      fontWeight: 900,
+                      color: '#94a3b8',
+                      letterSpacing: 1,
+                    }}
+                  >
+                    LAPISAN TAPAK KARET
+                  </span>
+                </div>
+
+                {/* 2. LAPISAN TENGAH: ANYAMAN KAWAT BAJA (STEEL BELTS) */}
+                <div
+                  style={{
+                    width: 310,
+                    height: 60,
+                    margin: '14px 0',
+                    backgroundColor: '#0f172a',
+                    border: '2.5px solid #38bdf8',
+                    borderRadius: 10,
+                    position: 'relative',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 0 30px rgba(56, 189, 248, 0.4)',
+                    zIndex: 4,
+                  }}
+                >
+                  {/* Serat Kawat Logam Kuningan & Baja */}
+                  <svg width="310" height="60" style={{ position: 'absolute' }}>
+                    {[-30, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((x, idx) => (
+                      <line
+                        key={`steel-line-1-${idx}`}
+                        x1={x}
+                        y1={0}
+                        x2={x + 35}
+                        y2={60}
+                        stroke="#f59e0b"
+                        strokeWidth="3.5"
+                      />
+                    ))}
+                    {[-30, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((x, idx) => (
+                      <line
+                        key={`steel-line-2-${idx}`}
+                        x1={x + 35}
+                        y1={0}
+                        x2={x}
+                        y2={60}
+                        stroke="#e2e8f0"
+                        strokeWidth="2"
+                      />
+                    ))}
+                  </svg>
+                  <div
+                    style={{
+                      position: 'relative',
+                      zIndex: 6,
+                      backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                      padding: '4px 14px',
+                      borderRadius: 6,
+                      border: '1px solid #f59e0b',
+                      fontSize: 13,
+                      fontWeight: 900,
+                      color: '#f59e0b',
+                      letterSpacing: 1,
+                    }}
+                  >
+                    ★ ANYAMAN KAWAT BAJA (STEEL BELT) ★
+                  </div>
+                </div>
+
+                {/* 3. LAPISAN DASAR: RANGKA KARET DALAM (INNER PLY) */}
+                <div
+                  style={{
+                    width: 340,
+                    height: 50,
+                    backgroundColor: '#1e293b',
+                    border: '3px solid #334155',
+                    borderRadius: 12,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.9)',
+                    zIndex: 3,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 900,
+                      color: '#94a3b8',
+                      letterSpacing: 1,
+                    }}
+                  >
+                    DASAR RANGKA BAN (CARCASS PLY)
+                  </span>
+                </div>
+              </div>
+
+              {/* Status Tekanan Baja HUD */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: 18,
+                  padding: '6px 18px',
+                  backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                  border: '1px solid #38bdf8',
+                  borderRadius: 20,
+                  fontSize: 14,
+                  fontWeight: 800,
+                  color: '#38bdf8',
+                  letterSpacing: 1,
+                }}
+              >
+                KETAHANAN STRUKTUR: ANTI-PECAH
               </div>
             </div>
 
+            {/* Label Deskripsi di Bawah */}
             <div
               style={{
                 marginTop: 22,
@@ -604,93 +759,7 @@ export const ExplainerStyle: React.FC = () => {
                 letterSpacing: 1.5,
               }}
             >
-              LAPISAN KAWAT BAJA MENAHAN BAN DARI TEKANAN PECAH
+              KAWAT BAJA DITANAM DI ANTARA LAPISAN KARET
             </div>
           </div>
         )}
-      </div>
-
-      {/* SUBTITLE GAYA KONTEN INFLASI */}
-      <div
-        style={{
-          width: '90%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textAlign: 'center',
-          transform: `scale(${subtitlePop})`,
-          zIndex: 20,
-          padding: '10px 20px',
-        }}
-      >
-        <div
-          style={{
-            fontSize: 32,
-            fontWeight: 900,
-            lineHeight: 1.35,
-            color: '#ffffff',
-            textShadow: '0 4px 16px rgba(0,0,0,1), 0 2px 4px rgba(0,0,0,0.9)',
-            letterSpacing: 0.5,
-          }}
-        >
-          {currentScene.scriptPrefix}
-          <span
-            style={{
-              color: '#facc15',
-              backgroundColor: 'rgba(234, 179, 8, 0.15)',
-              padding: '2px 8px',
-              borderRadius: 8,
-              border: '1px solid rgba(250, 204, 21, 0.4)',
-              boxShadow: '0 0 18px rgba(250, 204, 21, 0.35)',
-              display: 'inline-block',
-              marginLeft: 6,
-            }}
-          >
-            {currentScene.highlight}
-          </span>
-        </div>
-      </div>
-
-      {/* PROGRESS BAR */}
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 10,
-          zIndex: 10,
-        }}
-      >
-        <div
-          style={{
-            width: '85%',
-            height: 8,
-            backgroundColor: 'rgba(255, 255, 255, 0.12)',
-            borderRadius: 6,
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              width: `${(frame / 1500) * 100}%`,
-              height: '100%',
-              backgroundColor:
-                activeIndex === 0 ? '#0d9488' : activeIndex === 1 ? '#eab308' : '#38bdf8',
-            }}
-          />
-        </div>
-        <div
-          style={{
-            fontSize: 16,
-            color: '#64748b',
-            fontFamily: 'monospace',
-            letterSpacing: 2,
-          }}
-        >
-          PROSES PEMBUATAN BAN MOBIL • {Math.floor(frame / fps)}s / 50s
-        </div>
-      </div>
-    </div>
-  );
-};
