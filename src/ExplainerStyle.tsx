@@ -142,23 +142,23 @@ export const ExplainerStyle: React.FC = () => {
 
       {/* ==================== 3. VOICEOVER 5 BABAK ==================== */}
       <Sequence from={0} durationInFrames={240}>
-        <Audio src={staticFile('VO1.mp3')} volume={1} />
+        <Audio src={staticFile('vo1.mp3')} volume={1} />
       </Sequence>
 
       <Sequence from={240} durationInFrames={360}>
-        <Audio src={staticFile('VO2.mp3')} volume={1} />
+        <Audio src={staticFile('vo2.mp3')} volume={1} />
       </Sequence>
 
       <Sequence from={600} durationInFrames={420}>
-        <Audio src={staticFile('VO3.mp3')} volume={1} />
+        <Audio src={staticFile('vo3.mp3')} volume={1} />
       </Sequence>
 
       <Sequence from={1020} durationInFrames={240}>
-        <Audio src={staticFile('VO4.mp3')} volume={1} />
+        <Audio src={staticFile('vo4.mp3')} volume={1} />
       </Sequence>
 
       <Sequence from={1260} durationInFrames={240}>
-        <Audio src={staticFile('VO5.mp3')} volume={1} />
+        <Audio src={staticFile('vo5.mp3')} volume={1} />
       </Sequence>
 
       {/* HUD & GRID BACKGROUND */}
