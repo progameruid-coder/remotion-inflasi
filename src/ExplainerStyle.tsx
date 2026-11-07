@@ -12,11 +12,41 @@ export const ExplainerStyle: React.FC = () => {
 
   // Konfigurasi 5 Babak (Total 1500 frame = 50 detik)
   const scenes = [
-    { start: 0, duration: 240, badge: '1 • PASIR SILIKA', subtitle: 'BAHAN BAKU ALAMI' },
-    { start: 240, duration: 360, badge: '2 • LELEHAN 1.700°C', subtitle: 'PELEBURAN TUNGKU EKSTREM' },
-    { start: 600, duration: 420, badge: '3 • MENGAPUNG DI TIMAH', subtitle: 'METODE KACA APUNG (FLOAT GLASS)' },
-    { start: 1020, duration: 240, badge: '4 • POTONG PRESISI', subtitle: 'PENDINGINAN & PISAU INTAN' },
-    { start: 1260, duration: 240, badge: '5 • JENDELA RUMAH', subtitle: 'PERAKITAN RANGKA KUSEN' },
+    {
+      start: 0,
+      duration: 240,
+      badge: '1 • PASIR SILIKA',
+      subtitle: 'BAHAN BAKU ALAMI',
+      script: 'Kaca jendela rumah yang super bening ini aslinya berasal dari butiran pasir pantai.',
+    },
+    {
+      start: 240,
+      duration: 360,
+      badge: '2 • LELEHAN 1.700°C',
+      subtitle: 'PELEBURAN TUNGKU EKSTREM',
+      script: 'Pasir silika dicampur soda abu dan batu kapur, lalu dibakar di tungku hingga 1.700°C menjadi lelehan kental.',
+    },
+    {
+      start: 600,
+      duration: 420,
+      badge: '3 • MENGAPUNG DI TIMAH',
+      subtitle: 'METODE KACA APUNG (FLOAT GLASS)',
+      script: 'Cairan kaca dialirkan di atas kolam timah cair agar mengapung dan melebar rata tanpa gelombang.',
+    },
+    {
+      start: 1020,
+      duration: 240,
+      badge: '4 • POTONG PRESISI',
+      subtitle: 'PENDINGINAN & PISAU INTAN',
+      script: 'Setelah didinginkan perlahan agar tidak getas, mata pisau intan menggores dan memotong kaca dengan presisi.',
+    },
+    {
+      start: 1260,
+      duration: 240,
+      badge: '5 • JENDELA RUMAH',
+      subtitle: 'PERAKITAN RANGKA KUSEN',
+      script: 'Kaca dipasangi pelindung silikon dan dijepit rangka kusen kokoh siap melindungi rumahmu!',
+    },
   ];
 
   const currentSceneIndex = scenes.findIndex(
@@ -31,6 +61,13 @@ export const ExplainerStyle: React.FC = () => {
     frame: sceneProgress,
     fps,
     config: { damping: 12, mass: 0.5, stiffness: 120 },
+  });
+
+  // Animasi Fade Subtitle Per Babak
+  const subtitleOpacity = spring({
+    frame: sceneProgress,
+    fps,
+    config: { damping: 15, mass: 0.5 },
   });
 
   // --- Bab 2: Termometer Suhu (25°C -> 1700°C) ---
@@ -76,7 +113,7 @@ export const ExplainerStyle: React.FC = () => {
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '90px 40px',
+        padding: '80px 40px 140px 40px', // Ruang aman ekstra di bawah
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -99,7 +136,7 @@ export const ExplainerStyle: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: 14,
+          gap: 12,
           zIndex: 10,
         }}
       >
@@ -121,7 +158,7 @@ export const ExplainerStyle: React.FC = () => {
         </div>
         <div
           style={{
-            fontSize: 24,
+            fontSize: 22,
             color: '#94a3b8',
             fontWeight: 700,
             letterSpacing: 2,
@@ -136,20 +173,20 @@ export const ExplainerStyle: React.FC = () => {
       <div
         style={{
           position: 'relative',
-          width: 760,
-          height: 760,
+          width: 720,
+          height: 640,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           zIndex: 10,
         }}
       >
-        {/* Lingkaran Panggung Luar dengan Bayangan Dalam */}
+        {/* Lingkaran Panggung */}
         <div
           style={{
             position: 'absolute',
-            width: 720,
-            height: 720,
+            width: 680,
+            height: 680,
             borderRadius: '50%',
             border: '2px dashed rgba(255, 255, 255, 0.14)',
             boxShadow: 'inset 0 0 60px rgba(0,0,0,0.8)',
@@ -159,11 +196,10 @@ export const ExplainerStyle: React.FC = () => {
         {/* ==================== BABAK 1: PASIR SILIKA ==================== */}
         {activeIndex === 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Gundukan Pasir Besar */}
             <div
               style={{
-                width: 440,
-                height: 240,
+                width: 420,
+                height: 220,
                 backgroundColor: '#d97706',
                 borderRadius: '50% 50% 25% 25%',
                 backgroundImage: 'radial-gradient(#fde68a 18%, transparent 19%)',
@@ -172,14 +208,13 @@ export const ExplainerStyle: React.FC = () => {
                 position: 'relative',
               }}
             >
-              {/* Partikel melayang halus */}
               {[0, 1, 2, 3, 4, 5].map((i) => (
                 <div
                   key={i}
                   style={{
                     position: 'absolute',
                     top: -25 - i * 18,
-                    left: 120 + i * 35,
+                    left: 110 + i * 35,
                     width: 16,
                     height: 16,
                     backgroundColor: '#fef08a',
@@ -192,12 +227,12 @@ export const ExplainerStyle: React.FC = () => {
             </div>
             <div
               style={{
-                marginTop: 40,
-                padding: '12px 28px',
+                marginTop: 35,
+                padding: '10px 26px',
                 backgroundColor: 'rgba(255,255,255,0.08)',
                 border: '1px solid rgba(255,255,255,0.15)',
                 borderRadius: 12,
-                fontSize: 24,
+                fontSize: 22,
                 color: '#e2e8f0',
                 fontWeight: 700,
                 letterSpacing: 1,
@@ -213,8 +248,8 @@ export const ExplainerStyle: React.FC = () => {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
               style={{
-                width: 440,
-                height: 440,
+                width: 400,
+                height: 400,
                 borderRadius: 50,
                 background: 'linear-gradient(145deg, #1e293b, #0f172a)',
                 border: '4px solid #ef4444',
@@ -225,22 +260,20 @@ export const ExplainerStyle: React.FC = () => {
                 position: 'relative',
               }}
             >
-              {/* Inti Lava Kaca Bersinar */}
               <div
                 style={{
-                  width: 300,
-                  height: 300,
+                  width: 270,
+                  height: 270,
                   borderRadius: '50%',
                   background: 'radial-gradient(circle, #fef08a 0%, #f97316 55%, #b91c1c 100%)',
                   boxShadow: '0 0 45px #f97316',
                 }}
               />
             </div>
-            {/* Monitor Suhu */}
             <div
               style={{
-                marginTop: 35,
-                fontSize: 44,
+                marginTop: 30,
+                fontSize: 40,
                 fontWeight: 900,
                 color: currentTemp > 1000 ? '#ef4444' : '#f59e0b',
                 fontFamily: 'monospace',
@@ -253,15 +286,15 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* ==================== BABAK 3: KACA APUNG (FLOAT GLASS) ==================== */}
+        {/* ==================== BABAK 3: KACA APUNG ==================== */}
         {activeIndex === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
             <div
               style={{
-                width: 700,
-                height: 320,
+                width: 680,
+                height: 300,
                 backgroundColor: '#0f172a',
-                borderRadius: 28,
+                borderRadius: 26,
                 border: '2px solid rgba(255,255,255,0.18)',
                 position: 'relative',
                 overflow: 'hidden',
@@ -271,19 +304,18 @@ export const ExplainerStyle: React.FC = () => {
                 boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
               }}
             >
-              {/* Lapisan Kaca Mengapung */}
               <div
                 style={{
                   width: `${floatWidth}px`,
-                  height: 60,
+                  height: 56,
                   background: 'linear-gradient(90deg, #f97316 0%, #38bdf8 70%)',
                   borderRadius: 14,
-                  margin: '0 auto 24px auto',
+                  margin: '0 auto 20px auto',
                   boxShadow: '0 0 25px rgba(56, 189, 248, 0.6)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: 900,
                   color: '#041e3d',
                   opacity: textFadeIn,
@@ -292,15 +324,14 @@ export const ExplainerStyle: React.FC = () => {
               >
                 KACA MENGAPUNG (TEBAL 5mm)
               </div>
-              {/* Kolam Timah Cair */}
               <div
                 style={{
-                  height: 120,
+                  height: 110,
                   background: 'linear-gradient(180deg, #94a3b8 0%, #475569 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 22,
+                  fontSize: 20,
                   fontWeight: 900,
                   letterSpacing: 2,
                   color: '#0f172a',
@@ -311,8 +342,8 @@ export const ExplainerStyle: React.FC = () => {
             </div>
             <div
               style={{
-                marginTop: 25,
-                fontSize: 22,
+                marginTop: 22,
+                fontSize: 20,
                 color: '#38bdf8',
                 fontWeight: 700,
                 letterSpacing: 1.5,
@@ -323,13 +354,13 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* ==================== BABAK 4: PENDINGINAN & PEMOTONGAN ==================== */}
+        {/* ==================== BABAK 4: POTONG PRESISI ==================== */}
         {activeIndex === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
               style={{
-                width: 520,
-                height: 520,
+                width: 480,
+                height: 480,
                 backgroundColor: 'rgba(56, 189, 248, 0.22)',
                 border: '3px solid rgba(56, 189, 248, 0.85)',
                 borderRadius: 20,
@@ -340,7 +371,6 @@ export const ExplainerStyle: React.FC = () => {
                 justifyContent: 'center',
               }}
             >
-              {/* Garis Potong Intan Meluncur Vertikal */}
               <div
                 style={{
                   position: 'absolute',
@@ -352,7 +382,6 @@ export const ExplainerStyle: React.FC = () => {
                   boxShadow: '0 0 16px #38bdf8, 0 0 30px #38bdf8',
                 }}
               />
-              {/* Mata Pisau Intan */}
               <div
                 style={{
                   position: 'absolute',
@@ -368,8 +397,8 @@ export const ExplainerStyle: React.FC = () => {
             </div>
             <div
               style={{
-                marginTop: 30,
-                fontSize: 24,
+                marginTop: 25,
+                fontSize: 22,
                 color: '#e2e8f0',
                 fontWeight: 700,
               }}
@@ -379,14 +408,13 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* ==================== BABAK 5: JENDELA RUMAH UTUH ==================== */}
+        {/* ==================== BABAK 5: JENDELA UTUH ==================== */}
         {activeIndex === 4 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Rangka Kusen Jendela Berpalang */}
             <div
               style={{
-                width: 460,
-                height: 560,
+                width: 420,
+                height: 500,
                 backgroundColor: '#1e293b',
                 padding: `${frameThickness}px`,
                 borderRadius: 24,
@@ -394,10 +422,8 @@ export const ExplainerStyle: React.FC = () => {
                 display: 'flex',
                 position: 'relative',
                 boxSizing: 'border-box',
-                transition: 'all 0.1s ease-out',
               }}
             >
-              {/* Grid 4 Kaca Jendela (2x2 Panel) */}
               <div
                 style={{
                   flex: 1,
@@ -417,12 +443,9 @@ export const ExplainerStyle: React.FC = () => {
                     style={{
                       backgroundColor: 'rgba(56, 189, 248, 0.22)',
                       border: '1px solid rgba(255, 255, 255, 0.15)',
-                      position: 'relative',
                     }}
                   />
                 ))}
-
-                {/* Kilatan Refleksi Cahaya Diagonal */}
                 <div
                   style={{
                     position: 'absolute',
@@ -437,8 +460,6 @@ export const ExplainerStyle: React.FC = () => {
                   }}
                 />
               </div>
-
-              {/* Handle / Gagang Jendela */}
               <div
                 style={{
                   position: 'absolute',
@@ -446,17 +467,16 @@ export const ExplainerStyle: React.FC = () => {
                   top: '50%',
                   transform: 'translateY(-50%)',
                   width: 12,
-                  height: 60,
+                  height: 56,
                   backgroundColor: '#cbd5e1',
                   borderRadius: 6,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
                 }}
               />
             </div>
             <div
               style={{
-                marginTop: 30,
-                fontSize: 24,
+                marginTop: 25,
+                fontSize: 22,
                 color: '#10b981',
                 fontWeight: 900,
                 letterSpacing: 1.5,
@@ -468,6 +488,37 @@ export const ExplainerStyle: React.FC = () => {
         )}
       </div>
 
+      {/* SUBTITLE KOTAK AMAN (SAFE ZONE - DI ATAS PROGRESS BAR) */}
+      <div
+        style={{
+          width: '90%',
+          minHeight: 110,
+          backgroundColor: 'rgba(15, 23, 42, 0.85)',
+          border: '1.5px solid rgba(245, 158, 11, 0.3)',
+          borderRadius: 20,
+          padding: '16px 28px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
+          opacity: subtitleOpacity,
+          zIndex: 20,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 28,
+            fontWeight: 700,
+            lineHeight: 1.4,
+            color: '#f8fafc',
+            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
+          }}
+        >
+          {currentScene.script}
+        </div>
+      </div>
+
       {/* FOOTER: PROGRESS BAR */}
       <div
         style={{
@@ -475,14 +526,14 @@ export const ExplainerStyle: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: 12,
+          gap: 10,
           zIndex: 10,
         }}
       >
         <div
           style={{
             width: '85%',
-            height: 10,
+            height: 8,
             backgroundColor: 'rgba(255, 255, 255, 0.12)',
             borderRadius: 6,
             overflow: 'hidden',
@@ -498,7 +549,7 @@ export const ExplainerStyle: React.FC = () => {
         </div>
         <div
           style={{
-            fontSize: 18,
+            fontSize: 16,
             color: '#64748b',
             fontFamily: 'monospace',
             letterSpacing: 2,
