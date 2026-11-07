@@ -2,7 +2,7 @@ import React from 'react';
 import { Composition } from 'remotion';
 import { KineticStyle } from './KineticStyle';
 
-export const Root: React.FC = () => {
+export const RemotionRoot: React.FC = () => {
   return (
     <>
       <Composition
