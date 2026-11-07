@@ -6,7 +6,7 @@ import {
   useVideoConfig,
 } from 'remotion';
 
-interface SubtitleItem {
+interface SceneItem {
   id: number;
   startFrame: number;
   endFrame: number;
@@ -21,46 +21,46 @@ interface SubtitleItem {
   };
 }
 
-const SCENE_DATA: SubtitleItem[] = [
+const SCENE_DATA: SceneItem[] = [
   {
     id: 1,
     startFrame: 0,
-    endFrame: 75,
-    idText: 'Kalau uang dicetak makin banyak,',
-    enText: 'If more and more money is printed,',
-    activeWord: 'dicetak',
-    topBadge: 'CETAK UANG',
-    callout: { label: 'JUMLAH UANG', value: '+300%', type: 'arrow-up' },
+    endFrame: 225,
+    idText: 'Pernah sadar nggak, kenapa harga semangkok bakso tiap tahun selalu naik?',
+    enText: 'Ever wondered why a bowl of meatballs keeps getting pricier every year?',
+    activeWord: 'selalu naik?',
+    topBadge: 'HARGA MAKANAN',
+    callout: { label: 'HARGA AWAL', value: 'Rp 20.000', type: 'bar' },
   },
   {
     id: 2,
-    startFrame: 75,
-    endFrame: 150,
-    idText: 'harga barang otomatis akan melonjak.',
-    enText: 'commodity prices will automatically surge.',
-    activeWord: 'melonjak.',
-    topBadge: 'INFLASI TINGGI',
-    callout: { label: 'HARGA PASAR', value: '+150%', type: 'arrow-up' },
+    startFrame: 225,
+    endFrame: 480,
+    idText: 'Bukan pedagangnya yang pelit, tapi mesin cetak uang jalan terus dan uang beredar terlalu cepat!',
+    enText: 'It is not the seller being stingy, but continuous money printing increases supply too fast!',
+    activeWord: 'cetak uang',
+    topBadge: 'PASOKAN UANG',
+    callout: { label: 'UANG BEREDAR', value: '+350%', type: 'arrow-up' },
   },
   {
     id: 3,
-    startFrame: 150,
-    endFrame: 225,
-    idText: 'Akibatnya, daya beli kamu bakal tergerus,',
-    enText: 'As a result, your purchasing power drops,',
-    activeWord: 'tergerus,',
+    startFrame: 480,
+    endFrame: 720,
+    idText: 'Uang Rp 20.000 kamu yang dulu dapat porsi penuh, sekarang porsinya dipangkas separuh.',
+    enText: 'Your 20k that once bought a full bowl now only gets you half a portion.',
+    activeWord: 'dipangkas separuh.',
     topBadge: 'DAYA BELI',
-    callout: { label: 'NILAI TABUNGAN', value: '-50%', type: 'arrow-down' },
+    callout: { label: 'PORSI MAKAN', value: '-50%', type: 'arrow-down' },
   },
   {
     id: 4,
-    startFrame: 225,
-    endFrame: 300,
-    idText: 'inilah yang disebut dengan inflasi!',
-    enText: 'this is what we call inflation!',
-    activeWord: 'inflasi!',
-    topBadge: 'INFLASI',
-    callout: { label: 'KERUGIAN', value: 'DRASTIS', type: 'bar' },
+    startFrame: 720,
+    endFrame: 900,
+    idText: 'Nominal uang di dompetmu sama, tapi nilai aslinya menguap. Itulah inflasi!',
+    enText: 'The nominal cash in your wallet stays identical, but purchasing power evaporates. That is inflation!',
+    activeWord: 'menguap.',
+    topBadge: 'INFLASI NYATA',
+    callout: { label: 'NILAI ASLI', value: 'MENYUSUT', type: 'arrow-down' },
   },
 ];
 export const ExplainerStyle: React.FC = () => {
@@ -73,6 +73,7 @@ export const ExplainerStyle: React.FC = () => {
 
   const sceneProgress = frame - currentScene.startFrame;
 
+  // Spring animations
   const badgeScale = spring({
     frame: sceneProgress,
     fps,
@@ -84,29 +85,43 @@ export const ExplainerStyle: React.FC = () => {
     [0, 1],
     [30, 0]
   );
-  const calloutOpacity = interpolate(sceneProgress, [0, 8], [0, 1], {
+  const calloutOpacity = interpolate(sceneProgress, [0, 10], [0, 1], {
     extrapolateRight: 'clamp',
   });
 
-  const rollerAngle = (frame * 12) % 360;
-  const billOffset = (frame * 10) % 140;
+  // Scene 1: Mangkok membal & uap naik
+  const bowlPop = spring({
+    frame: sceneProgress,
+    fps,
+    config: { damping: 12, mass: 0.8 },
+  });
+  const steamY = (frame * 3) % 40;
 
-  const priceBarHeight = interpolate(sceneProgress, [5, 60], [100, 360], {
-    extrapolateLeft: 'clamp',
+  // Scene 2: Rol mesin cetak & lembaran uang berjatuhan bertumpuk
+  const rollerAngle = (frame * 14) % 360;
+  const billDropY = (frame * 12) % 180;
+  const stackGrowth = interpolate(sceneProgress, [0, 240], [20, 100], {
     extrapolateRight: 'clamp',
   });
 
-  const balanceAngle = interpolate(
-    spring({ frame: sceneProgress, fps, config: { damping: 14 } }),
-    [0, 1],
-    [0, 22]
-  );
+  // Scene 3: Porsi menyusut & garis ukur turun
+  const meatballScale = interpolate(sceneProgress, [20, 180], [1, 0.45], {
+    extrapolateRight: 'clamp',
+  });
+
+  // Scene 4: Uang menguap / memudar
+  const cashOpacity = interpolate(sceneProgress, [30, 140], [1, 0.2], {
+    extrapolateRight: 'clamp',
+  });
+  const cashFloatUp = interpolate(sceneProgress, [0, 160], [0, -80], {
+    extrapolateRight: 'clamp',
+  });
 
   return (
     <div
       style={{
         flex: 1,
-        backgroundColor: '#11141c',
+        backgroundColor: '#0f1219',
         color: '#ffffff',
         fontFamily: 'Inter, system-ui, sans-serif',
         display: 'flex',
@@ -118,11 +133,11 @@ export const ExplainerStyle: React.FC = () => {
         overflow: 'hidden',
       }}
     >
-      {/* 1. TOP HEADER */}
+      {/* 1. TOP HEADER EMAS */}
       <div style={{ height: 110, display: 'flex', alignItems: 'center' }}>
         <div
           style={{
-            fontSize: 60,
+            fontSize: 62,
             fontWeight: 900,
             letterSpacing: 2,
             color: '#ffd000',
@@ -137,14 +152,14 @@ export const ExplainerStyle: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. VISUAL TENGAH */}
+      {/* 2. VISUAL TENGAH TEKNIKAL LEBIH BESAR */}
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          height: 650,
+          height: 720,
           position: 'relative',
           width: '100%',
         }}
@@ -152,24 +167,77 @@ export const ExplainerStyle: React.FC = () => {
         <div
           style={{
             position: 'absolute',
-            width: 540,
-            height: 540,
-            borderRadius: 28,
-            border: '2px solid rgba(255,255,255,0.08)',
+            width: 620,
+            height: 620,
+            borderRadius: 36,
+            border: '2px dashed rgba(255,255,255,0.1)',
             backgroundColor: 'rgba(255,255,255,0.02)',
           }}
         />
 
-        {/* SCENE 1: CETAK UANG */}
+        {/* SCENE 1: MANGKOK BAKSO UTUH + HARGA 20RB */}
         {currentScene.id === 1 && (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              transform: `scale(${bowlPop})`,
+            }}
+          >
+            {/* Uap Panas Makanan */}
+            <div style={{ display: 'flex', gap: 20, marginBottom: -10, transform: `translateY(-${steamY}px)` }}>
+              <span style={{ fontSize: 32, opacity: 0.6 }}>♨️</span>
+              <span style={{ fontSize: 32, opacity: 0.8 }}>♨️</span>
+            </div>
+
+            {/* Mangkok Besar */}
+            <div
+              style={{
+                width: 320,
+                height: 170,
+                backgroundColor: '#f8fafc',
+                borderRadius: '0 0 160px 160px',
+                border: '6px solid #cbd5e1',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 16,
+              }}
+            >
+              <div style={{ width: 65, height: 65, borderRadius: '50%', backgroundColor: '#78350f', border: '3px solid #b45309' }} />
+              <div style={{ width: 75, height: 75, borderRadius: '50%', backgroundColor: '#78350f', border: '3px solid #b45309' }} />
+              <div style={{ width: 65, height: 65, borderRadius: '50%', backgroundColor: '#78350f', border: '3px solid #b45309' }} />
+            </div>
+
+            <div
+              style={{
+                marginTop: 30,
+                backgroundColor: '#16a34a',
+                padding: '10px 28px',
+                borderRadius: 20,
+                fontWeight: 900,
+                fontSize: 28,
+                letterSpacing: 1,
+                boxShadow: '0 4px 15px rgba(22,163,74,0.4)',
+              }}
+            >
+              PORSI KOMPLIT 100%
+            </div>
+          </div>
+        )}
+
+        {/* SCENE 2: MESIN CETAK UANG MASAL BERPUTAR */}
+        {currentScene.id === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
               style={{
-                width: 260,
-                height: 70,
+                width: 340,
+                height: 80,
                 backgroundColor: '#334155',
-                borderRadius: 35,
-                border: '4px solid #64748b',
+                borderRadius: 40,
+                border: '5px solid #64748b',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -178,138 +246,143 @@ export const ExplainerStyle: React.FC = () => {
             >
               <div
                 style={{
-                  width: 200,
-                  height: 10,
-                  backgroundColor: '#0ea5e9',
-                  borderRadius: 5,
+                  width: 260,
+                  height: 12,
+                  backgroundColor: '#38bdf8',
+                  borderRadius: 6,
                   transform: `rotate(${rollerAngle}deg)`,
                 }}
               />
             </div>
+
+            {/* Lembaran Uang Meluncur Turun */}
             <div
               style={{
-                width: 190,
-                height: 110,
+                width: 240,
+                height: 130,
                 backgroundColor: '#15803d',
-                borderRadius: 12,
-                border: '3px solid #4ade80',
+                borderRadius: 14,
+                border: '4px solid #4ade80',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                color: '#ffffff',
                 fontWeight: 900,
-                fontSize: 26,
-                marginTop: -15,
-                transform: `translateY(${billOffset}px)`,
+                fontSize: 30,
+                marginTop: -20,
+                transform: `translateY(${billDropY}px)`,
                 zIndex: 1,
               }}
             >
               <div>Rp 100.000</div>
-              <div style={{ fontSize: 13, opacity: 0.8 }}>BANK INDONESIA</div>
+              <div style={{ fontSize: 14, opacity: 0.8 }}>CETAK MASAL</div>
             </div>
+
+            {/* Tumpukan Uang Membesar di Bawah */}
             <div
               style={{
-                width: 280,
-                height: 35,
+                width: 360,
+                height: stackGrowth,
                 backgroundColor: '#166534',
-                borderRadius: 8,
-                marginTop: 130,
-                border: '3px solid #22c55e',
-                textAlign: 'center',
-                lineHeight: '30px',
-                fontWeight: 800,
-                fontSize: 16,
+                borderRadius: 14,
+                marginTop: 140,
+                border: '4px solid #22c55e',
+                boxShadow: '0 10px 25px rgba(22,101,52,0.6)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 900,
+                fontSize: 22,
+                letterSpacing: 2,
               }}
             >
-              PENCETAKAN MASAL
+              BANJIR PASOKAN UANG
             </div>
           </div>
         )}
 
-        {/* SCENE 2: LONJAKAN HARGA */}
-        {currentScene.id === 2 && (
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 36, height: 420 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div style={{ fontSize: 18, color: '#94a3b8', marginBottom: 8 }}>Normal</div>
-              <div
-                style={{
-                  width: 90,
-                  height: 120,
-                  backgroundColor: '#3b82f6',
-                  borderRadius: 12,
-                }}
-              />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div style={{ fontSize: 22, fontWeight: 900, color: '#ef4444', marginBottom: 8 }}>
-                LONJAKAN
-              </div>
-              <div
-                style={{
-                  width: 110,
-                  height: priceBarHeight,
-                  background: 'linear-gradient(180deg, #ef4444 0%, #991b1b 100%)',
-                  borderRadius: 14,
-                  border: '3px solid #f87171',
-                }}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* SCENE 3: DAYA BELI */}
+        {/* SCENE 3: PORSI MENYUSUT & TERSISA SEDIKIT */}
         {currentScene.id === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
               style={{
-                width: 240,
+                width: 320,
                 height: 170,
-                border: '6px solid #f59e0b',
-                borderRadius: '0 0 28px 28px',
+                backgroundColor: '#f8fafc',
+                borderRadius: '0 0 160px 160px',
+                border: '6px solid #cbd5e1',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                position: 'relative',
               }}
             >
-              <div style={{ fontSize: 60 }}>🛒</div>
+              {/* Bakso Mengecil di Pojok */}
+              <div
+                style={{
+                  transform: `scale(${meatballScale})`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ width: 65, height: 65, borderRadius: '50%', backgroundColor: '#78350f', border: '3px solid #b45309' }} />
+              </div>
+
+              {/* Tanda Silang Porsi Hilang */}
+              <div style={{ position: 'absolute', right: 60, fontSize: 38, opacity: 0.35 }}>
+                ❌
+              </div>
             </div>
-            <div style={{ marginTop: 24, fontSize: 22, fontWeight: 800, color: '#f87171' }}>
-              Kapasitas Barang Berkurang
+
+            <div
+              style={{
+                marginTop: 30,
+                backgroundColor: '#ef4444',
+                padding: '10px 28px',
+                borderRadius: 20,
+                fontWeight: 900,
+                fontSize: 26,
+                letterSpacing: 1,
+              }}
+            >
+              PORSI TERGERUS -50%
             </div>
           </div>
         )}
 
-        {/* SCENE 4: NERACA TIMBANGAN */}
+        {/* SCENE 4: NOMINAL SAMA TAPI MENGUAP */}
         {currentScene.id === 4 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 440, position: 'relative' }}>
-            <div style={{ width: 14, height: 220, backgroundColor: '#cbd5e1', borderRadius: 7 }} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
               style={{
-                position: 'absolute',
-                top: 20,
-                width: 380,
-                height: 12,
-                backgroundColor: '#f59e0b',
-                borderRadius: 6,
-                transform: `rotate(${balanceAngle}deg)`,
+                width: 280,
+                height: 150,
+                backgroundColor: '#1e3a8a',
+                borderRadius: 18,
+                border: '4px solid #60a5fa',
                 display: 'flex',
-                justifyContent: 'space-between',
-                padding: '0 10px',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontWeight: 900,
+                fontSize: 36,
+                opacity: cashOpacity,
+                transform: `translateY(${cashFloatUp}px)`,
+                boxShadow: '0 15px 35px rgba(30,58,138,0.5)',
               }}
             >
-              <div style={{ marginTop: 16, padding: '10px 14px', backgroundColor: '#ef4444', borderRadius: 10, fontSize: 16, fontWeight: 900 }}>
-                UANG BANYAK
-              </div>
-              <div style={{ marginTop: -40, padding: '10px 14px', backgroundColor: '#3b82f6', borderRadius: 10, fontSize: 16, fontWeight: 900 }}>
-                1 BARANG
-              </div>
+              <div>Rp 20.000</div>
+              <div style={{ fontSize: 16, color: '#93c5fd', marginTop: 6 }}>NILAI MELEMAH</div>
             </div>
-            <div style={{ width: 160, height: 18, backgroundColor: '#64748b', borderRadius: 9, marginTop: -4 }} />
+
+            <div style={{ marginTop: 40, fontSize: 24, fontWeight: 800, color: '#f87171' }}>
+              💨 Daya Beli Menguap
+            </div>
           </div>
         )}
-        {/* CALLOUT PILL */}
+        {/* CALLOUT PILL GAYA YOUTUBE */}
         {currentScene.callout && (
           <div
             style={{
@@ -318,8 +391,8 @@ export const ExplainerStyle: React.FC = () => {
               right: 20,
               backgroundColor: 'rgba(15, 23, 42, 0.95)',
               border: '3px solid #38bdf8',
-              borderRadius: 16,
-              padding: '12px 22px',
+              borderRadius: 18,
+              padding: '14px 26px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -329,12 +402,12 @@ export const ExplainerStyle: React.FC = () => {
               zIndex: 10,
             }}
           >
-            <span style={{ fontSize: 18, fontWeight: 700, color: '#94a3b8' }}>
+            <span style={{ fontSize: 18, fontWeight: 700, color: '#94a3b8', letterSpacing: 1 }}>
               {currentScene.callout.label}
             </span>
             <span
               style={{
-                fontSize: 34,
+                fontSize: 36,
                 fontWeight: 900,
                 color: currentScene.callout.type === 'arrow-up' ? '#ef4444' : '#22c55e',
                 marginTop: 2,
@@ -346,10 +419,10 @@ export const ExplainerStyle: React.FC = () => {
         )}
       </div>
 
-      {/* 3. DUAL SUBTITLE */}
+      {/* 3. DUAL SUBTITLE DI BAWAH (INDO BESAR + INGGRIS KECIL) */}
       <div
         style={{
-          minHeight: 220,
+          minHeight: 240,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -360,18 +433,16 @@ export const ExplainerStyle: React.FC = () => {
       >
         <div
           style={{
-            fontSize: 48,
+            fontSize: 44,
             fontWeight: 900,
             lineHeight: 1.3,
             textTransform: 'uppercase',
-            maxWidth: 950,
+            maxWidth: 960,
             textShadow: '0 3px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, 0 6px 14px rgba(0,0,0,0.9)',
           }}
         >
           {currentScene.idText.split(' ').map((word, i) => {
-            const isMatch = word
-              .toLowerCase()
-              .includes(currentScene.activeWord.toLowerCase());
+            const isMatch = currentScene.activeWord && word.toLowerCase().includes(currentScene.activeWord.toLowerCase());
             return (
               <span
                 key={i}
@@ -392,8 +463,9 @@ export const ExplainerStyle: React.FC = () => {
             fontSize: 24,
             fontWeight: 600,
             color: 'rgba(255, 255, 255, 0.7)',
-            marginTop: 14,
+            marginTop: 16,
             fontStyle: 'italic',
+            letterSpacing: 0.5,
           }}
         >
           {currentScene.enText}
