@@ -1,7 +1,10 @@
 import React from 'react';
 import {
+  Audio,
   interpolate,
+  Sequence,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
@@ -63,14 +66,14 @@ export const ExplainerStyle: React.FC = () => {
     config: { damping: 12, mass: 0.5, stiffness: 120 },
   });
 
-  // Animasi Fade Subtitle Per Babak
+  // Animasi Fade Subtitle
   const subtitleOpacity = spring({
     frame: sceneProgress,
     fps,
     config: { damping: 15, mass: 0.5 },
   });
 
-  // --- Bab 2: Termometer Suhu (25°C -> 1700°C) ---
+  // Bab 2: Termometer Suhu
   const currentTemp = Math.round(
     interpolate(frame, [250, 460], [25, 1700], {
       extrapolateLeft: 'clamp',
@@ -78,7 +81,7 @@ export const ExplainerStyle: React.FC = () => {
     })
   );
 
-  // --- Bab 3: Aliran Kaca Apung ---
+  // Bab 3: Aliran Kaca Apung
   const floatWidth = interpolate(frame, [620, 800], [100, 680], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -88,13 +91,13 @@ export const ExplainerStyle: React.FC = () => {
     extrapolateRight: 'clamp',
   });
 
-  // --- Bab 4: Garis Potong Pisau Intan ---
+  // Bab 4: Garis Potong Intan
   const cutLaserY = interpolate(frame, [1100, 1190], [0, 520], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  // --- Bab 5: Pemasangan Kusen Menjepit ---
+  // Bab 5: Kusen Menjepit
   const frameSnap = spring({
     frame: frame - 1270,
     fps,
@@ -113,11 +116,51 @@ export const ExplainerStyle: React.FC = () => {
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '80px 40px 140px 40px', // Ruang aman ekstra di bawah
+        padding: '80px 40px 140px 40px',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
+      {/* ==================== 1. MUSIK LATAR (50 Detik) ==================== */}
+      <Sequence from={0} durationInFrames={1500}>
+        <Audio src={staticFile('bgm.mp3')} volume={0.12} />
+      </Sequence>
+
+      {/* ==================== 2. SFX PERGANTIAN BABAK ==================== */}
+      <Sequence from={235} durationInFrames={35}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+      </Sequence>
+      <Sequence from={595} durationInFrames={35}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+      </Sequence>
+      <Sequence from={1015} durationInFrames={35}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+      </Sequence>
+      <Sequence from={1255} durationInFrames={35}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+      </Sequence>
+
+      {/* ==================== 3. VOICEOVER 5 BABAK ==================== */}
+      <Sequence from={0} durationInFrames={240}>
+        <Audio src={staticFile('VO1.mp3')} volume={1} />
+      </Sequence>
+
+      <Sequence from={240} durationInFrames={360}>
+        <Audio src={staticFile('VO2.mp3')} volume={1} />
+      </Sequence>
+
+      <Sequence from={600} durationInFrames={420}>
+        <Audio src={staticFile('VO3.mp3')} volume={1} />
+      </Sequence>
+
+      <Sequence from={1020} durationInFrames={240}>
+        <Audio src={staticFile('VO4.mp3')} volume={1} />
+      </Sequence>
+
+      <Sequence from={1260} durationInFrames={240}>
+        <Audio src={staticFile('VO5.mp3')} volume={1} />
+      </Sequence>
+
       {/* HUD & GRID BACKGROUND */}
       <div
         style={{
@@ -181,7 +224,6 @@ export const ExplainerStyle: React.FC = () => {
           zIndex: 10,
         }}
       >
-        {/* Lingkaran Panggung */}
         <div
           style={{
             position: 'absolute',
@@ -193,7 +235,7 @@ export const ExplainerStyle: React.FC = () => {
           }}
         />
 
-        {/* ==================== BABAK 1: PASIR SILIKA ==================== */}
+        {/* BABAK 1: PASIR SILIKA */}
         {activeIndex === 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -243,7 +285,7 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* ==================== BABAK 2: TUNGKU PELEBURAN ==================== */}
+        {/* BABAK 2: TUNGKU PELEBURAN */}
         {activeIndex === 1 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -286,7 +328,7 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* ==================== BABAK 3: KACA APUNG ==================== */}
+        {/* BABAK 3: KACA APUNG */}
         {activeIndex === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
             <div
@@ -354,7 +396,7 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* ==================== BABAK 4: POTONG PRESISI ==================== */}
+        {/* BABAK 4: POTONG PRESISI */}
         {activeIndex === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -408,7 +450,7 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* ==================== BABAK 5: JENDELA UTUH ==================== */}
+        {/* BABAK 5: JENDELA UTUH */}
         {activeIndex === 4 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -488,7 +530,7 @@ export const ExplainerStyle: React.FC = () => {
         )}
       </div>
 
-      {/* SUBTITLE KOTAK AMAN (SAFE ZONE - DI ATAS PROGRESS BAR) */}
+      {/* SUBTITLE KOTAK AMAN */}
       <div
         style={{
           width: '90%',
