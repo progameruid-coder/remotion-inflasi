@@ -13,90 +13,32 @@ export const ExplainerStyle: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const scenes = [
-    {
-      start: 0,
-      duration: 240,
-      badge: '1 • GETAH POHON KARET',
-      subtitle: 'BAHAN DASAR ALAMI',
-      script: 'Getah pohon karet aslinya lembek dan gampang meleleh, tapi bisa diolah menahan beban mobil hingga berton-ton!',
-    },
-    {
-      start: 240,
-      duration: 360,
-      badge: '2 • VULKANISASI BELERANG',
-      subtitle: 'CAMPURAN CARBON & SULFUR',
-      script: 'Karet dicampur bubuk sulfur dan carbon black agar warna hitam pekat sekaligus mengikat rantai molekul jadi 10x lebih kuat.',
-    },
-    {
-      start: 600,
-      duration: 420,
-      badge: '3 • RANGKA KAWAT BAJA',
-      subtitle: 'STEEL BELT INNER CORE',
-      script: 'Rahasia kekuatannya ada di dalam: lapisan rajutan kawat baja dipasang menyilang agar ban tidak pecah dihantam beban ekstrem.',
-    },
-    {
-      start: 1020,
-      duration: 240,
-      badge: '4 • CETAKAN HIDROLIK',
-      subtitle: 'PEMBENTUKAN ALUR TIRE TREAD',
-      script: 'Ban mentah dipanaskan dalam mesin pres hidrolik untuk mencetak motif tapak pembuang air dan pencengkeram aspal.',
-    },
-    {
-      start: 1260,
-      duration: 240,
-      badge: '5 • TAHAN BEBAN BERTON-TON',
-      subtitle: 'RODA MOBIL SIAP MELAJU',
-      script: 'Hasilnya, ban karet elastis ini siap menopang mobilmu melaju kencang di jalanan ekstrem dengan aman!',
-    },
-  ];
-
-  const currentSceneIndex = scenes.findIndex(
-    (s) => frame >= s.start && frame < s.start + s.duration
-  );
-  const activeIndex = currentSceneIndex === -1 ? scenes.length - 1 : currentSceneIndex;
-  const currentScene = scenes[activeIndex];
-  const sceneProgress = frame - currentScene.start;
-
+  // Badge & Subtitle Babak 1
   const badgeScale = spring({
-    frame: sceneProgress,
+    frame,
     fps,
     config: { damping: 12, mass: 0.5, stiffness: 120 },
   });
 
-  const subtitleOpacity = spring({
-    frame: sceneProgress,
-    fps,
-    config: { damping: 15, mass: 0.5 },
-  });
-
-  const rubberColorProgress = interpolate(frame, [260, 480], [0, 1], {
+  // Animasi Tetesan Getah (Loop setiap 30 frame / 1 detik)
+  const dropCycle = frame % 30;
+  const dropY = interpolate(dropCycle, [0, 24], [0, 110], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
+  const dropOpacity = interpolate(dropCycle, [0, 5, 22, 25], [0, 1, 1, 0]);
 
-  const steelWireProgress = interpolate(frame, [630, 850], [0, 100], {
+  // Efek Getah Bertambah di Mangkuk
+  const latexLevel = interpolate(frame, [0, 240], [14, 38], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-
-  const moldPressY = interpolate(frame, [1040, 1150], [90, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-
-  const loadWeight = Math.round(
-    interpolate(frame, [1270, 1420], [500, 3200], {
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
-    })
-  );
 
   return (
     <div
       style={{
         flex: 1,
-        backgroundColor: '#0a0d14',
+        backgroundColor: '#070a10',
         color: '#ffffff',
         fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
         display: 'flex',
@@ -108,33 +50,24 @@ export const ExplainerStyle: React.FC = () => {
         overflow: 'hidden',
       }}
     >
+      {/* 1. BGM MUSIK LATAR */}
       <Sequence from={0} durationInFrames={1500}>
         <Audio src={staticFile('bgm.mp3')} volume={0.12} />
       </Sequence>
-      <Sequence from={235} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
-      </Sequence>
-      <Sequence from={595} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
-      </Sequence>
-      <Sequence from={1015} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
-      </Sequence>
-      <Sequence from={1255} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
-      </Sequence>
 
+      {/* BACKGROUND HUD & GRID */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           backgroundImage:
-            'radial-gradient(circle at 50% 45%, rgba(15, 118, 110, 0.25) 0%, transparent 75%), linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)',
+            'radial-gradient(circle at 50% 45%, rgba(13, 148, 136, 0.22) 0%, transparent 75%), linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
           backgroundSize: '100% 100%, 48px 48px, 48px 48px',
-          opacity: 0.85,
+          opacity: 0.9,
         }}
       />
 
+      {/* HEADER: BADGE TAHAPAN */}
       <div
         style={{
           display: 'flex',
@@ -146,19 +79,19 @@ export const ExplainerStyle: React.FC = () => {
       >
         <div
           style={{
-            backgroundColor: '#14b8a6',
-            color: '#042f2e',
-            padding: '14px 38px',
+            backgroundColor: '#0d9488',
+            color: '#f0fdfa',
+            padding: '14px 40px',
             borderRadius: 50,
             fontSize: 36,
             fontWeight: 900,
             letterSpacing: 1.5,
             transform: `scale(${badgeScale})`,
-            boxShadow: '0 10px 28px rgba(20, 184, 166, 0.4)',
+            boxShadow: '0 10px 30px rgba(13, 148, 136, 0.45)',
             textTransform: 'uppercase',
           }}
         >
-          {currentScene.badge}
+          1 • GETAH POHON KARET
         </div>
         <div
           style={{
@@ -169,10 +102,11 @@ export const ExplainerStyle: React.FC = () => {
             textTransform: 'uppercase',
           }}
         >
-          {currentScene.subtitle}
+          PENYADAPAN LATEKS ALAMI (HEVEA BRASILIENSIS)
         </div>
       </div>
 
+      {/* PANGGUNG PUSAT: POHON KARET & SADAPAN */}
       <div
         style={{
           position: 'relative',
@@ -184,334 +118,177 @@ export const ExplainerStyle: React.FC = () => {
           zIndex: 10,
         }}
       >
+        {/* Lingkaran Panggung Luar */}
         <div
           style={{
             position: 'absolute',
             width: 680,
             height: 680,
             borderRadius: '50%',
-            border: '2px dashed rgba(255, 255, 255, 0.14)',
-            boxShadow: 'inset 0 0 60px rgba(0,0,0,0.8)',
+            border: '2px dashed rgba(255, 255, 255, 0.12)',
+            boxShadow: 'inset 0 0 60px rgba(0,0,0,0.85)',
           }}
         />
 
-        {activeIndex === 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+          {/* Batang Pohon Karet Silinder 3D */}
+          <div
+            style={{
+              width: 260,
+              height: 480,
+              background: 'linear-gradient(90deg, #2b1d16 0%, #4a3528 25%, #6a4e3b 50%, #4a3528 75%, #231610 100%)',
+              borderRadius: '28px',
+              border: '3px solid #1a100b',
+              position: 'relative',
+              boxShadow: '0 30px 70px rgba(0,0,0,0.9), inset 0 0 25px rgba(0,0,0,0.6)',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Tekstur Serat Kulit Kayu Kasar */}
+            <div style={{ position: 'absolute', top: 30, left: 24, width: 6, height: 70, backgroundColor: '#1a100b', opacity: 0.6, borderRadius: 3 }} />
+            <div style={{ position: 'absolute', top: 120, right: 35, width: 8, height: 90, backgroundColor: '#1a100b', opacity: 0.6, borderRadius: 4 }} />
+            <div style={{ position: 'absolute', top: 260, left: 45, width: 6, height: 80, backgroundColor: '#1a100b', opacity: 0.6, borderRadius: 3 }} />
+            <div style={{ position: 'absolute', top: 380, right: 50, width: 7, height: 60, backgroundColor: '#1a100b', opacity: 0.6, borderRadius: 3 }} />
+
+            {/* Torehan Sadapan Spiral (Irisan Miring Kulit Kayu) */}
             <div
               style={{
-                width: 320,
-                height: 320,
-                backgroundColor: '#f8fafc',
-                borderRadius: '45% 55% 60% 40% / 50% 60% 40% 50%',
-                boxShadow: '0 25px 50px rgba(255, 255, 255, 0.15), inset -10px -10px 25px rgba(0,0,0,0.15)',
+                position: 'absolute',
+                top: 130,
+                left: -25,
+                width: 310,
+                height: 22,
+                backgroundColor: '#f1f5f9',
+                transform: 'rotate(-26deg)',
+                borderBottom: '4px solid #1a100b',
+                boxShadow: '0 0 12px rgba(255,255,255,0.7)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                transform: `scale(${1 + Math.sin(frame / 8) * 0.04})`,
+                paddingLeft: 40,
               }}
             >
-              <div style={{ fontSize: 22, fontWeight: 900, color: '#0f172a' }}>LATEKS ALAMI</div>
+              {/* Aliran Cairan Lateks Putih di Dalam Torehan */}
+              <div
+                style={{
+                  width: '80%',
+                  height: 6,
+                  backgroundColor: '#ffffff',
+                  borderRadius: 3,
+                  boxShadow: '0 0 6px #ffffff',
+                }}
+              />
             </div>
+
+            {/* Corong / Seng Penyalur Getah */}
             <div
               style={{
-                marginTop: 35,
-                padding: '10px 26px',
-                backgroundColor: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                borderRadius: 12,
-                fontSize: 22,
-                color: '#e2e8f0',
-                fontWeight: 700,
+                position: 'absolute',
+                top: 215,
+                left: 116,
+                width: 26,
+                height: 12,
+                backgroundColor: '#94a3b8',
+                borderRadius: '2px 2px 6px 6px',
+                border: '1px solid #cbd5e1',
+                transform: 'rotate(15deg)',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.6)',
               }}
-            >
-              Polimer Alami Lembut & Elastis
-            </div>
-          </div>
-        )}
-        {activeIndex === 1 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            />
+
+            {/* Tetesan Lateks Putih Menetes ke Bawah */}
             <div
               style={{
-                width: 360,
-                height: 360,
-                borderRadius: 40,
-                backgroundColor: `rgb(${Math.round(240 - rubberColorProgress * 215)}, ${Math.round(240 - rubberColorProgress * 215)}, ${Math.round(240 - rubberColorProgress * 210)})`,
-                border: '4px solid #f59e0b',
-                boxShadow: '0 0 40px rgba(245, 158, 11, 0.4)',
+                position: 'absolute',
+                top: 228 + dropY,
+                left: 124,
+                width: 10,
+                height: 16,
+                backgroundColor: '#ffffff',
+                borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+                boxShadow: '0 0 10px #ffffff',
+                opacity: dropOpacity,
+              }}
+            />
+
+            {/* Kawat Penyangga Mangkuk */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 355,
+                left: 20,
+                width: 220,
+                height: 4,
+                backgroundColor: '#475569',
+                borderRadius: 2,
+              }}
+            />
+
+            {/* Mangkuk Sadapan Tempurung Kelapa / Keramik */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 340,
+                left: 85,
+                width: 90,
+                height: 65,
+                backgroundColor: '#573318',
+                border: '4px solid #3d210d',
+                borderRadius: '0 0 45px 45px',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'center',
+                justifyContent: 'flex-start',
                 alignItems: 'center',
-                gap: 15,
-                transition: 'all 0.1s ease-out',
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 24,
-                  fontWeight: 900,
-                  color: rubberColorProgress > 0.5 ? '#f59e0b' : '#0f172a',
-                }}
-              >
-                + CARBON BLACK
-              </div>
-              <div
-                style={{
-                  fontSize: 20,
-                  fontWeight: 800,
-                  color: rubberColorProgress > 0.5 ? '#e2e8f0' : '#475569',
-                }}
-              >
-                + SULFUR (BELERANG)
-              </div>
-            </div>
-            <div
-              style={{
-                marginTop: 30,
-                fontSize: 26,
-                fontWeight: 900,
-                color: '#f59e0b',
-                fontFamily: 'monospace',
-                letterSpacing: 2,
-              }}
-            >
-              KEKUATAN TARIK: +1.000%
-            </div>
-          </div>
-        )}
-
-        {activeIndex === 2 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div
-              style={{
-                width: 480,
-                height: 480,
-                borderRadius: '50%',
-                backgroundColor: '#1e293b',
-                border: '18px solid #0f172a',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'relative',
+                boxShadow: '0 8px 20px rgba(0,0,0,0.8), inset 0 -6px 12px rgba(0,0,0,0.5)',
                 overflow: 'hidden',
-                boxShadow: '0 25px 60px rgba(0,0,0,0.8)',
               }}
             >
-              <svg width="400" height="400" style={{ position: 'absolute' }}>
-                {[-120, -60, 0, 60, 120].map((offset, idx) => (
-                  <line
-                    key={`l1-${idx}`}
-                    x1={0}
-                    y1={200 + offset}
-                    x2={(400 * steelWireProgress) / 100}
-                    y2={offset}
-                    stroke="#38bdf8"
-                    strokeWidth="5"
-                    strokeDasharray="6,4"
-                  />
-                ))}
-                {[-120, -60, 0, 60, 120].map((offset, idx) => (
-                  <line
-                    key={`l2-${idx}`}
-                    x1={0}
-                    y1={offset}
-                    x2={(400 * steelWireProgress) / 100}
-                    y2={200 + offset}
-                    stroke="#f59e0b"
-                    strokeWidth="5"
-                    strokeDasharray="6,4"
-                  />
-                ))}
-              </svg>
+              {/* Permukaan Cairan Lateks Putih yang Terisi */}
               <div
                 style={{
-                  width: 180,
-                  height: 180,
-                  borderRadius: '50%',
-                  backgroundColor: '#0a0d14',
-                  border: '6px solid #475569',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 18,
-                  fontWeight: 900,
-                  color: '#94a3b8',
+                  width: '100%',
+                  height: latexLevel,
+                  backgroundColor: '#ffffff',
+                  borderRadius: '0 0 35px 35px',
+                  boxShadow: '0 0 8px #ffffff',
+                  marginTop: 'auto',
                 }}
-              >
-                VELG MOBIL
-              </div>
-            </div>
-            <div
-              style={{
-                marginTop: 25,
-                fontSize: 22,
-                color: '#38bdf8',
-                fontWeight: 700,
-                letterSpacing: 1.5,
-              }}
-            >
-              SABUK ANYAMAN BAJA MENYILANG (STEEL BELT)
+              />
             </div>
           </div>
-        )}
-        {activeIndex === 3 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div
-              style={{
-                width: 440,
-                height: 480,
-                backgroundColor: '#0f172a',
-                borderRadius: 24,
-                border: '3px solid rgba(255,255,255,0.2)',
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                padding: 24,
-                boxShadow: '0 20px 50px rgba(0,0,0,0.7)',
-              }}
-            >
-              <div
-                style={{
-                  height: 90,
-                  backgroundColor: '#ef4444',
-                  borderRadius: 14,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 20,
-                  fontWeight: 900,
-                  color: '#ffffff',
-                  transform: `translateY(${moldPressY}px)`,
-                  boxShadow: '0 10px 25px rgba(239, 68, 68, 0.4)',
-                }}
-              >
-                MESIN HIDROLIK SUHU 200°C
-              </div>
 
-              <div
-                style={{
-                  height: 160,
-                  backgroundColor: '#18181b',
-                  borderRadius: 18,
-                  border: '4px solid #3f3f46',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-around',
-                  padding: '0 15px',
-                }}
-              >
-                {[0, 1, 2, 3, 4, 5].map((t) => (
-                  <div
-                    key={t}
-                    style={{
-                      width: 24,
-                      height: 110,
-                      backgroundColor: '#27272a',
-                      borderRadius: 8,
-                      border: '2px solid #71717a',
-                    }}
-                  />
-                ))}
-              </div>
-
-              <div
-                style={{
-                  height: 90,
-                  backgroundColor: '#ef4444',
-                  borderRadius: 14,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 20,
-                  fontWeight: 900,
-                  color: '#ffffff',
-                  transform: `translateY(${-moldPressY}px)`,
-                  boxShadow: '0 -10px 25px rgba(239, 68, 68, 0.4)',
-                }}
-              >
-                CETAKAN ALUR TAPAK (TREAD)
-              </div>
-            </div>
-            <div
-              style={{
-                marginTop: 25,
-                fontSize: 22,
-                color: '#e2e8f0',
-                fontWeight: 700,
-              }}
-            >
-              ALUR PEMBUANG AIR & ANTI-SLIP DIBENTUK
-            </div>
+          {/* Label Spesifikasi HUD */}
+          <div
+            style={{
+              marginTop: 25,
+              padding: '10px 28px',
+              backgroundColor: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              borderRadius: 12,
+              fontSize: 22,
+              color: '#e2e8f0',
+              fontWeight: 700,
+              letterSpacing: 1,
+            }}
+          >
+            Getah Alami Disadap • Kadar Karet ~30%
           </div>
-        )}
-
-        {activeIndex === 4 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div
-              style={{
-                width: 480,
-                height: 480,
-                borderRadius: '50%',
-                backgroundColor: '#18181b',
-                border: '28px solid #27272a',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'relative',
-                boxShadow: '0 30px 70px rgba(0,0,0,0.9)',
-                transform: `scaleY(${1 - (loadWeight / 3200) * 0.08})`,
-              }}
-            >
-              <div
-                style={{
-                  width: 220,
-                  height: 220,
-                  borderRadius: '50%',
-                  backgroundColor: '#0f172a',
-                  border: '8px solid #94a3b8',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 0 30px rgba(148, 163, 184, 0.4)',
-                }}
-              >
-                <div style={{ fontSize: 18, color: '#94a3b8', fontWeight: 800 }}>TEKANAN</div>
-                <div style={{ fontSize: 32, color: '#38bdf8', fontWeight: 900 }}>35 PSI</div>
-              </div>
-            </div>
-            <div
-              style={{
-                marginTop: 25,
-                fontSize: 36,
-                color: '#10b981',
-                fontWeight: 900,
-                fontFamily: 'monospace',
-                letterSpacing: 2,
-                textShadow: '0 0 15px rgba(16, 185, 129, 0.5)',
-              }}
-            >
-              BEBAN TERTOPANG: {loadWeight} KG
-            </div>
-          </div>
-        )}
+        </div>
       </div>
+
       {/* SUBTITLE KOTAK AMAN (SAFE ZONE) */}
       <div
         style={{
           width: '90%',
           minHeight: 110,
-          backgroundColor: 'rgba(15, 23, 42, 0.85)',
-          border: '1.5px solid rgba(20, 184, 166, 0.35)',
+          backgroundColor: 'rgba(15, 23, 42, 0.88)',
+          border: '1.5px solid rgba(13, 148, 136, 0.4)',
           borderRadius: 20,
           padding: '16px 28px',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           textAlign: 'center',
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
-          opacity: subtitleOpacity,
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.6)',
           zIndex: 20,
         }}
       >
@@ -524,11 +301,11 @@ export const ExplainerStyle: React.FC = () => {
             textShadow: '0 2px 8px rgba(0,0,0,0.8)',
           }}
         >
-          {currentScene.script}
+          Getah pohon karet aslinya lembek dan gampang meleleh, tapi bisa diolah menahan beban mobil hingga berton-ton!
         </div>
       </div>
 
-      {/* FOOTER: PROGRESS BAR */}
+      {/* PROGRESS BAR */}
       <div
         style={{
           width: '100%',
@@ -552,7 +329,7 @@ export const ExplainerStyle: React.FC = () => {
             style={{
               width: `${(frame / 1500) * 100}%`,
               height: '100%',
-              backgroundColor: '#14b8a6',
+              backgroundColor: '#0d9488',
             }}
           />
         </div>
