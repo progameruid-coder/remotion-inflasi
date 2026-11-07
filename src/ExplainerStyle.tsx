@@ -1,117 +1,61 @@
-import React from 'react';
+   import React from 'react';
 import {
-  Audio,
-  Sequence,
-  staticFile,
   interpolate,
   spring,
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
 
-interface SceneItem {
-  id: number;
-  startFrame: number;
-  endFrame: number;
-  idText: string;
-  enText: string;
-  activeKeywords: string[];
-  topBadge: string;
-  callout: {
-    label: string;
-    value: string;
-    type: 'arrow-up' | 'arrow-down' | 'bar';
-  };
-}
-
-const SCENE_DATA: SceneItem[] = [
-  {
-    id: 1,
-    startFrame: 0,
-    endFrame: 225,
-    idText: 'Pernah sadar nggak, kenapa harga semangkok bakso tiap tahun selalu naik?',
-    enText: 'Ever wondered why a bowl of meatballs keeps getting pricier every year?',
-    activeKeywords: ['selalu', 'naik?'],
-    topBadge: 'HARGA MAKANAN',
-    callout: { label: 'HARGA AWAL', value: 'Rp 20.000', type: 'bar' },
-  },
-  {
-    id: 2,
-    startFrame: 225,
-    endFrame: 480,
-    idText: 'Bukan pedagangnya yang pelit, tapi mesin cetak uang jalan terus dan uang beredar terlalu cepat!',
-    enText: 'It is not the seller being stingy, but continuous money printing increases supply too fast!',
-    activeKeywords: ['cetak', 'uang'],
-    topBadge: 'PASOKAN UANG',
-    callout: { label: 'UANG BEREDAR', value: '+350%', type: 'arrow-up' },
-  },
-  {
-    id: 3,
-    startFrame: 480,
-    endFrame: 720,
-    idText: 'Uang Rp 20.000 kamu yang dulu dapat porsi penuh, sekarang porsinya dipangkas separuh.',
-    enText: 'Your 20k that once bought a full bowl now only gets you half a portion.',
-    activeKeywords: ['dipangkas', 'separuh.'],
-    topBadge: 'DAYA BELI',
-    callout: { label: 'PORSI MAKAN', value: '-50%', type: 'arrow-down' },
-  },
-  {
-    id: 4,
-    startFrame: 720,
-    endFrame: 900,
-    idText: 'Nominal uang di dompetmu sama, tapi nilai aslinya menguap. Itulah inflasi!',
-    enText: 'The nominal cash in your wallet stays identical, but purchasing power evaporates. That is inflation!',
-    activeKeywords: ['menguap.', 'inflasi!'],
-    topBadge: 'INFLASI NYATA',
-    callout: { label: 'NILAI ASLI', value: 'MENYUSUT', type: 'arrow-down' },
-  },
-];
-
 export const ExplainerStyle: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const currentScene =
-    SCENE_DATA.find((s) => frame >= s.startFrame && frame < s.endFrame) ||
-    SCENE_DATA[0];
+  // Konfigurasi 5 Babak (Total 1500 frame = 50 detik)
+  const scenes = [
+    { start: 0, duration: 240, badge: '1 • PASIR SILIKA', subtitle: 'BAHAN BAKU ALAMI' },
+    { start: 240, duration: 360, badge: '2 • LELEHAN 1.700°C', subtitle: 'PELEBURAN TUNGKU EKSTREM' },
+    { start: 600, duration: 420, badge: '3 • MENGAPUNG DI TIMAH', subtitle: 'METODE KACA APUNG (FLOAT GLASS)' },
+    { start: 1020, duration: 240, badge: '4 • POTONG PRESISI', subtitle: 'PENDINGINAN & PISAU INTAN' },
+    { start: 1260, duration: 240, badge: '5 • JENDELA RUMAH', subtitle: 'PERAKITAN RANGKA KUSEN' },
+  ];
 
-  const sceneProgress = frame - currentScene.startFrame;
+  const currentSceneIndex = scenes.findIndex(
+    (s) => frame >= s.start && frame < s.start + s.duration
+  );
+  const activeIndex = currentSceneIndex === -1 ? scenes.length - 1 : currentSceneIndex;
+  const currentScene = scenes[activeIndex];
+  const sceneProgress = frame - currentScene.start;
 
+  // Animasi Pop Badge Langkah
   const badgeScale = spring({
     frame: sceneProgress,
     fps,
-    config: { damping: 12, mass: 0.5, stiffness: 200 },
+    config: { damping: 12, mass: 0.5, stiffness: 120 },
   });
 
-  const calloutY = interpolate(
-    spring({ frame: sceneProgress, fps, config: { damping: 15 } }),
-    [0, 1],
-    [30, 0]
+  // --- Bab 2: Animasi Termometer Suhu (25°C -> 1700°C) ---
+  const currentTemp = Math.round(
+    interpolate(frame, [250, 480], [25, 1700], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    })
   );
-  const calloutOpacity = interpolate(sceneProgress, [0, 10], [0, 1], {
+
+  // --- Bab 3: Animasi Aliran Kaca Apung ---
+  const floatWidth = interpolate(frame, [620, 850], [80, 520], {
+    extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const bowlScale = spring({
-    frame: sceneProgress,
-    fps,
-    config: { damping: 13, mass: 0.7, stiffness: 180 },
-  });
-
-  const rollerAngle = (frame * 14) % 360;
-  const billDropY = (frame * 10) % 150;
-  const stackGrowth = interpolate(sceneProgress, [0, 240], [25, 80], {
+  // --- Bab 4: Garis Potong Pisau Intan ---
+  const cutLaserY = interpolate(frame, [1120, 1200], [0, 400], {
+    extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const meatballScale = interpolate(sceneProgress, [20, 180], [1, 0.45], {
-    extrapolateRight: 'clamp',
-  });
-
-  const cashOpacity = interpolate(sceneProgress, [30, 140], [1, 0.2], {
-    extrapolateRight: 'clamp',
-  });
-  const cashFloatUp = interpolate(sceneProgress, [0, 160], [0, -80], {
+  // --- Bab 5: Pemasangan Kusen ---
+  const frameOffset = interpolate(frame, [1270, 1340], [120, 0], {
+    extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
@@ -119,9 +63,9 @@ export const ExplainerStyle: React.FC = () => {
     <div
       style={{
         flex: 1,
-        backgroundColor: '#0d1017',
+        backgroundColor: '#0a0d14',
         color: '#ffffff',
-        fontFamily: 'Inter, system-ui, sans-serif',
+        fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -131,236 +75,393 @@ export const ExplainerStyle: React.FC = () => {
         overflow: 'hidden',
       }}
     >
-            {/* 1. MUSIK LATAR (Sepanjang 30 detik) */}
-      <Sequence from={0} durationInFrames={900}>
-        <Audio src={staticFile('bgm.mp3')} volume={0.12} />
-      </Sequence>
+      {/* HUD & GRID BACKGROUND */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage:
+            'radial-gradient(circle at 50% 40%, rgba(30, 58, 138, 0.22) 0%, transparent 70%), linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
+          backgroundSize: '100% 100%, 40px 40px, 40px 40px',
+          opacity: 0.8,
+        }}
+      />
 
-      {/* 2. EFEK SUARA */}
-      <Sequence from={220} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
-      </Sequence>
-      <Sequence from={475} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
-      </Sequence>
-      <Sequence from={715} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
-      </Sequence>
-
-      <Sequence from={250} durationInFrames={70}>
-        <Audio src={staticFile('cash.mp3')} volume={0.35} />
-      </Sequence>
-
-      <Sequence from={500} durationInFrames={40}>
-        <Audio src={staticFile('pop.mp3')} volume={0.35} />
-      </Sequence>
-
-                    {/* VOICEOVER PER ADENGAN */}
-              <Sequence from={0} durationInFrames={225}>
-        <Audio src={staticFile('VO1.mp3')} volume={1} />
-      </Sequence>
-      <Sequence from={225} durationInFrames={255}>
-        <Audio src={staticFile('VO2.mp3')} volume={1} />
-      </Sequence>
-      <Sequence from={480} durationInFrames={240}>
-        <Audio src={staticFile('VO3.mp3')} volume={1} />
-      </Sequence>
-      <Sequence from={720} durationInFrames={180}>
-        <Audio src={staticFile('VO4.mp3')} volume={1} />
-      </Sequence>
-
-      <div style={{ height: 110, display: 'flex', alignItems: 'center' }}>
-        <div
-          style={{
-            fontSize: 62,
-            fontWeight: 900,
-            letterSpacing: 2,
-            color: '#ffd000',
-            textTransform: 'uppercase',
-            textShadow:
-              '0 4px 0 #8c5a00, 0 8px 16px rgba(0,0,0,0.8), -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000',
-            transform: `scale(${badgeScale})`,
-            textAlign: 'center',
-          }}
-        >
-          {currentScene.topBadge}
-        </div>
-      </div>
-
+      {/* HEADER: BADGE TAHAPAN & SUBTITLE */}
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
-          height: 720,
-          position: 'relative',
-          width: '100%',
+          gap: 12,
+          zIndex: 10,
         }}
       >
         <div
           style={{
+            backgroundColor: '#f59e0b',
+            color: '#090d16',
+            padding: '12px 32px',
+            borderRadius: 50,
+            fontSize: 34,
+            fontWeight: 900,
+            letterSpacing: 1.5,
+            transform: `scale(${badgeScale})`,
+            boxShadow: '0 8px 24px rgba(245, 158, 11, 0.35)',
+            textTransform: 'uppercase',
+          }}
+        >
+          {currentScene.badge}
+        </div>
+        <div
+          style={{
+            fontSize: 22,
+            color: '#94a3b8',
+            fontWeight: 600,
+            letterSpacing: 2,
+            textTransform: 'uppercase',
+          }}
+        >
+          {currentScene.subtitle}
+        </div>
+      </div>
+
+      {/* PANGGUNG PUSAT / MINIATUR MEKANIK */}
+      <div
+        style={{
+          position: 'relative',
+          width: 620,
+          height: 620,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 10,
+        }}
+      >
+        {/* Panggung Isometrik Lingkaran Luar */}
+        <div
+          style={{
             position: 'absolute',
-            width: 620,
-            height: 620,
-            borderRadius: 40,
-            border: '2px dashed rgba(255,255,255,0.08)',
-            backgroundColor: 'rgba(255,255,255,0.02)',
+            width: 580,
+            height: 580,
+            borderRadius: '50%',
+            border: '2px dashed rgba(255, 255, 255, 0.12)',
+            boxShadow: 'inset 0 0 40px rgba(0,0,0,0.6)',
           }}
         />
 
-        {currentScene.id === 1 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', transform: `scale(${bowlScale})` }}>
+        {/* ==================== BABAK 1: PASIR SILIKA ==================== */}
+        {activeIndex === 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Butiran Pasir & Gundukan */}
             <div
               style={{
-                width: 360,
-                height: 360,
-                borderRadius: '50%',
-                backgroundColor: '#f8fafc',
-                border: '14px solid #e2e8f0',
-                boxShadow: '0 25px 60px rgba(0,0,0,0.6), inset 0 6px 18px rgba(0,0,0,0.25)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                width: 320,
+                height: 180,
+                backgroundColor: '#d97706',
+                borderRadius: '50% 50% 20% 20%',
+                backgroundImage: 'radial-gradient(#fde68a 15%, transparent 16%)',
+                backgroundSize: '16px 16px',
+                boxShadow: '0 20px 40px rgba(217, 119, 6, 0.4)',
                 position: 'relative',
               }}
             >
+              {/* Partikel melayang */}
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  style={{
+                    position: 'absolute',
+                    top: -20 - i * 15,
+                    left: 100 + i * 25,
+                    width: 14,
+                    height: 14,
+                    backgroundColor: '#fef08a',
+                    borderRadius: '50%',
+                    transform: `translateY(${Math.sin((frame + i * 20) / 10) * 8}px)`,
+                  }}
+                />
+              ))}
+            </div>
+            <div
+              style={{
+                marginTop: 30,
+                padding: '8px 20px',
+                backgroundColor: 'rgba(255,255,255,0.08)',
+                borderRadius: 8,
+                fontSize: 20,
+                color: '#cbd5e1',
+                fontWeight: 600,
+              }}
+            >
+              SiO₂ (Silikon Dioksida) 70%
+            </div>
+          </div>
+        )}
+
+        {/* ==================== BABAK 2: TUNGKU PELEBURAN ==================== */}
+        {activeIndex === 1 && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Tungku Pijar */}
+            <div
+              style={{
+                width: 340,
+                height: 340,
+                borderRadius: 40,
+                background: 'linear-gradient(145deg, #1e293b, #0f172a)',
+                border: '3px solid #ef4444',
+                boxShadow: `0 0 ${40 + Math.sin(frame / 4) * 15}px rgba(239, 68, 68, 0.6)`,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'relative',
+              }}
+            >
+              {/* Inti Lava Lelehan Kaca */}
               <div
                 style={{
-                  position: 'absolute',
-                  width: 334,
-                  height: 334,
+                  width: 220,
+                  height: 220,
                   borderRadius: '50%',
-                  border: '3px solid #2563eb',
-                  opacity: 0.7,
+                  background: 'radial-gradient(circle, #fef08a 0%, #f97316 60%, #b91c1c 100%)',
+                  boxShadow: '0 0 35px #f97316',
                 }}
               />
+            </div>
+            {/* Indikator Suhu */}
+            <div
+              style={{
+                marginTop: 25,
+                fontSize: 38,
+                fontWeight: 900,
+                color: currentTemp > 1000 ? '#ef4444' : '#f59e0b',
+                fontFamily: 'monospace',
+                letterSpacing: 2,
+              }}
+            >
+              SUHU: {currentTemp}°C
+            </div>
+          </div>
+        )}
+
+        {/* ==================== BABAK 3: PROSES KACA APUNG (FLOAT GLASS) ==================== */}
+        {activeIndex === 2 && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div
+              style={{
+                width: 540,
+                height: 260,
+                backgroundColor: '#0f172a',
+                borderRadius: 24,
+                border: '2px solid rgba(255,255,255,0.15)',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+              }}
+            >
+              {/* Lapisan Kaca Mengapung (Jingga ke Bening) */}
               <div
                 style={{
-                  width: 290,
-                  height: 290,
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, #d97706 0%, #b45309 65%, #78350f 100%)',
-                  boxShadow: 'inset 0 10px 25px rgba(0,0,0,0.5)',
-                  position: 'relative',
-                  overflow: 'hidden',
+                  width: `${floatWidth}px`,
+                  height: 48,
+                  background: 'linear-gradient(90deg, #f97316 0%, #38bdf8 80%)',
+                  borderRadius: 12,
+                  margin: '0 auto 20px auto',
+                  boxShadow: '0 0 20px rgba(56, 189, 248, 0.5)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  fontSize: 16,
+                  fontWeight: 800,
+                  color: '#041e3d',
                 }}
               >
-                <svg width="280" height="280" viewBox="0 0 100 100" style={{ position: 'absolute', opacity: 0.55 }}>
-                  <path d="M 20 40 Q 50 15 80 45" stroke="#facc15" strokeWidth="3" fill="none" />
-                  <path d="M 25 55 Q 55 85 75 50" stroke="#facc15" strokeWidth="2.5" fill="none" />
-                  <path d="M 30 30 Q 60 65 70 30" stroke="#ffffff" strokeWidth="2" fill="none" />
-                </svg>
-                <div style={{ position: 'absolute', top: 100, left: 100, width: 90, height: 90, borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #9a3412 0%, #6c230b 60%, #431407 100%)', boxShadow: '4px 6px 14px rgba(0,0,0,0.6)', border: '2px solid #b45309' }} />
-                <div style={{ position: 'absolute', top: 45, left: 60, width: 72, height: 72, borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #9a3412 0%, #6c230b 60%, #431407 100%)', boxShadow: '3px 5px 12px rgba(0,0,0,0.55)', border: '2px solid #b45309' }} />
-                <div style={{ position: 'absolute', bottom: 45, right: 65, width: 68, height: 68, borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #9a3412 0%, #6c230b 60%, #431407 100%)', boxShadow: '3px 5px 12px rgba(0,0,0,0.55)', border: '2px solid #b45309' }} />
-                <div style={{ position: 'absolute', top: 85, right: 90, width: 14, height: 8, backgroundColor: '#22c55e', borderRadius: 4, transform: 'rotate(25deg)' }} />
-                <div style={{ position: 'absolute', bottom: 105, left: 80, width: 12, height: 7, backgroundColor: '#16a34a', borderRadius: 4, transform: 'rotate(-40deg)' }} />
-                <div style={{ position: 'absolute', top: 140, right: 75, width: 10, height: 5, backgroundColor: '#78350f', borderRadius: 2 }} />
-                <div style={{ position: 'absolute', top: 125, left: 110, width: 8, height: 4, backgroundColor: '#92400e', borderRadius: 2 }} />
+                KACA MENGAPUNG (TEBAL 5mm)
+              </div>
+              {/* Kolam Lelehan Timah Cair */}
+              <div
+                style={{
+                  height: 100,
+                  background: 'linear-gradient(180deg, #94a3b8 0%, #475569 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 20,
+                  fontWeight: 800,
+                  letterSpacing: 2,
+                  color: '#0f172a',
+                }}
+              >
+                KOLAM TIMAH CAIR (MOLTEN TIN)
               </div>
             </div>
-            <div style={{ marginTop: 26, backgroundColor: '#16a34a', padding: '10px 28px', borderRadius: 20, fontWeight: 900, fontSize: 26, letterSpacing: 1, boxShadow: '0 4px 15px rgba(22,163,74,0.4)' }}>
-              PORSI LENGKAP 100%
-            </div>
-          </div>
-        )}
-        {currentScene.id === 2 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', width: 520, height: 540, justifyContent: 'center' }}>
-            <div style={{ width: 440, height: 230, backgroundColor: '#1e293b', borderRadius: 20, border: '6px solid #475569', boxShadow: '0 20px 40px rgba(0,0,0,0.6), inset 0 2px 8px rgba(255,255,255,0.1)', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3 }}>
-              <div style={{ position: 'absolute', top: 14, left: 20, display: 'flex', gap: 8, alignItems: 'center' }}>
-                <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
-                <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ef4444' }} />
-                <span style={{ fontSize: 13, fontWeight: 900, color: '#94a3b8', letterSpacing: 1, marginLeft: 6 }}>PRINT-UNIT #01</span>
-              </div>
-              <div style={{ position: 'absolute', left: -28, width: 56, height: 56, borderRadius: '50%', border: '6px dashed #64748b', backgroundColor: '#334155', transform: `rotate(${rollerAngle * 1.5}deg)`, boxShadow: '0 4px 10px rgba(0,0,0,0.5)' }} />
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
-                <div style={{ width: 320, height: 55, borderRadius: 28, background: 'linear-gradient(180deg, #94a3b8 0%, #475569 50%, #1e293b 100%)', border: '3px solid #cbd5e1', boxShadow: 'inset 0 4px 6px rgba(255,255,255,0.4)', position: 'relative', overflow: 'hidden' }}>
-                  <div style={{ position: 'absolute', width: '100%', height: '100%', backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(0,0,0,0.3) 15px, rgba(0,0,0,0.3) 20px)', transform: `translateX(${(frame * 6) % 20}px)` }} />
-                </div>
-                <div style={{ width: 340, height: 4, backgroundColor: '#000000', opacity: 0.8 }} />
-                <div style={{ width: 320, height: 55, borderRadius: 28, background: 'linear-gradient(0deg, #94a3b8 0%, #475569 50%, #1e293b 100%)', border: '3px solid #cbd5e1', boxShadow: 'inset 0 -4px 6px rgba(255,255,255,0.4)' }} />
-              </div>
-              <div style={{ position: 'absolute', right: 20, top: 14, backgroundColor: '#0f172a', padding: '4px 10px', borderRadius: 6, border: '1px solid #334155', fontSize: 12, fontWeight: 900, color: '#38bdf8' }}>
-                HIGH SPEED
-              </div>
-            </div>
-            <div style={{ position: 'absolute', top: 220, width: 250, height: 125, background: 'linear-gradient(135deg, #166534 0%, #15803d 50%, #14532d 100%)', borderRadius: 12, border: '3px solid #4ade80', boxShadow: '0 12px 30px rgba(22,101,52,0.6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '10px 14px', color: '#ffffff', transform: `translateY(${billDropY}px)`, zIndex: 2 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: 13, fontWeight: 900, color: '#86efac' }}>BANK INDONESIA</span>
-                <span style={{ fontSize: 11, color: '#cbd5e1' }}>100000</span>
-              </div>
-              <div style={{ textAlign: 'center', fontSize: 30, fontWeight: 900, letterSpacing: 1, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>Rp 100.000</div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#86efac' }}>
-                <span>EMISI 2024</span>
-                <span>SERI NO. 99482</span>
-              </div>
-            </div>
-            <div style={{ position: 'absolute', bottom: 20, width: 420, height: 70, backgroundColor: '#0f172a', borderRadius: 16, border: '4px solid #22c55e', boxShadow: '0 14px 35px rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', zIndex: 4 }}>
-              <div style={{ fontSize: 20, fontWeight: 900, color: '#4ade80', letterSpacing: 2 }}>OUTPUT: BANJIR LIKUIDITAS</div>
-              <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 2 }}>Pasokan Uang Melonjak Tajam</div>
+            <div
+              style={{
+                marginTop: 20,
+                fontSize: 18,
+                color: '#38bdf8',
+                fontWeight: 600,
+                letterSpacing: 1.5,
+              }}
+            >
+              PERMUKAAN RATA ALAMI TANPA GELEMBUNG
             </div>
           </div>
         )}
 
-        {currentScene.id === 3 && (
+        {/* ==================== BABAK 4: PENDINGINAN & PEMOTONGAN ==================== */}
+        {activeIndex === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ width: 360, height: 360, borderRadius: '50%', backgroundColor: '#f8fafc', border: '14px solid #e2e8f0', boxShadow: '0 25px 60px rgba(0,0,0,0.6), inset 0 6px 18px rgba(0,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-              <div style={{ position: 'absolute', width: 334, height: 334, borderRadius: '50%', border: '3px solid #2563eb', opacity: 0.7 }} />
-              <div style={{ width: 290, height: 290, borderRadius: '50%', background: 'radial-gradient(circle, #78350f 0%, #451a03 100%)', boxShadow: 'inset 0 10px 25px rgba(0,0,0,0.6)', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ transform: `scale(${meatballScale})`, position: 'absolute', top: 100, left: 100 }}>
-                  <div style={{ width: 90, height: 90, borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #9a3412 0%, #6c230b 60%, #431407 100%)', boxShadow: '4px 6px 14px rgba(0,0,0,0.6)', border: '2px solid #b45309' }} />
-                </div>
-                <div style={{ position: 'absolute', top: 50, right: 65, fontSize: 44, opacity: 0.4 }}>❌</div>
-                <div style={{ position: 'absolute', bottom: 55, left: 65, fontSize: 44, opacity: 0.4 }}>❌</div>
+            <div
+              style={{
+                width: 440,
+                height: 400,
+                backgroundColor: 'rgba(56, 189, 248, 0.25)',
+                border: '2px solid rgba(56, 189, 248, 0.8)',
+                borderRadius: 16,
+                backdropFilter: 'blur(8px)',
+                position: 'relative',
+                boxShadow: '0 15px 35px rgba(0,0,0,0.5)',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              {/* Garis Pisau Intan Meluncur Vertikal */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: '50%',
+                  width: 3,
+                  height: cutLaserY,
+                  backgroundColor: '#ffffff',
+                  boxShadow: '0 0 12px #38bdf8, 0 0 24px #38bdf8',
+                }}
+              />
+              {/* Mata Pisau */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: cutLaserY - 10,
+                  left: 'calc(50% - 12px)',
+                  width: 24,
+                  height: 24,
+                  backgroundColor: '#f59e0b',
+                  transform: 'rotate(45deg)',
+                  boxShadow: '0 0 15px #f59e0b',
+                }}
+              />
+            </div>
+            <div
+              style={{
+                marginTop: 25,
+                fontSize: 20,
+                color: '#cbd5e1',
+                fontWeight: 600,
+              }}
+            >
+              PISAU INTAN MEMOTONG PRESISI
+            </div>
+          </div>
+        )}
+
+        {/* ==================== BABAK 5: PERAKITAN JENDELA UTUH ==================== */}
+        {activeIndex === 4 && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Bingkai Kusen & Kaca */}
+            <div
+              style={{
+                width: 380,
+                height: 460,
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                border: `${24 - frameOffset / 6}px solid #334155`,
+                borderRadius: 20,
+                position: 'relative',
+                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7)',
+                overflow: 'hidden',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              {/* Kaca Bening */}
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                  position: 'relative',
+                }}
+              >
+                {/* Kilatan Cahaya Refleksi */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: -50,
+                    left: -150 + ((frame - 1260) % 240) * 3,
+                    width: 80,
+                    height: 600,
+                    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                    transform: 'rotate(35deg)',
+                    filter: 'blur(10px)',
+                  }}
+                />
               </div>
             </div>
-            <div style={{ marginTop: 26, backgroundColor: '#ef4444', padding: '10px 28px', borderRadius: 20, fontWeight: 900, fontSize: 26, letterSpacing: 1, boxShadow: '0 4px 15px rgba(239,68,68,0.4)' }}>
-              PORSI TERGERUS -50%
+            <div
+              style={{
+                marginTop: 25,
+                fontSize: 22,
+                color: '#10b981',
+                fontWeight: 800,
+                letterSpacing: 1.5,
+              }}
+            >
+              JENDELA SIAP TERPASANG DI RUMAH
             </div>
-          </div>
-        )}
-
-        {currentScene.id === 4 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ width: 280, height: 150, backgroundColor: '#1e3a8a', borderRadius: 18, border: '4px solid #60a5fa', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', fontWeight: 900, fontSize: 36, opacity: cashOpacity, transform: `translateY(${cashFloatUp}px)`, boxShadow: '0 15px 35px rgba(30,58,138,0.5)' }}>
-              <div>Rp 20.000</div>
-              <div style={{ fontSize: 16, color: '#93c5fd', marginTop: 6 }}>NILAI MENURUN</div>
-            </div>
-            <div style={{ marginTop: 40, fontSize: 24, fontWeight: 800, color: '#f87171' }}>
-              💨 Daya Beli Menguap
-            </div>
-          </div>
-        )}
-
-        {currentScene.callout && (
-          <div style={{ position: 'absolute', top: 15, right: 20, backgroundColor: 'rgba(15, 23, 42, 0.95)', border: '3px solid #38bdf8', borderRadius: 18, padding: '14px 26px', display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.6)', opacity: calloutOpacity, transform: `translateY(${calloutY}px)`, zIndex: 10 }}>
-            <span style={{ fontSize: 18, fontWeight: 700, color: '#94a3b8', letterSpacing: 1 }}>{currentScene.callout.label}</span>
-            <span style={{ fontSize: 36, fontWeight: 900, color: currentScene.callout.type === 'arrow-up' ? '#ef4444' : '#22c55e', marginTop: 2 }}>{currentScene.callout.value}</span>
           </div>
         )}
       </div>
 
-      <div style={{ minHeight: 240, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 20px' }}>
-        <div style={{ fontSize: 44, fontWeight: 900, lineHeight: 1.3, textTransform: 'uppercase', maxWidth: 960, textShadow: '0 3px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, 0 6px 14px rgba(0,0,0,0.9)' }}>
-          {currentScene.idText.split(' ').map((word, i) => {
-            const cleanWord = word.toLowerCase().replace(/[^a-z0-9?]/g, '');
-            const isMatch = currentScene.activeKeywords.some((kw) => {
-              const cleanKw = kw.toLowerCase().replace(/[^a-z0-9?]/g, '');
-              return cleanWord.includes(cleanKw) || cleanKw.includes(cleanWord);
-            });
-            return (
-              <span key={i} style={{ color: isMatch ? '#22c55e' : '#ffffff', marginRight: 12, display: 'inline-block' }}>
-                {word}
-              </span>
-            );
-          })}
+      {/* FOOTER: PROGRESS BAR DURASI */}
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 12,
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            width: '85%',
+            height: 8,
+            backgroundColor: 'rgba(255, 255, 255, 0.12)',
+            borderRadius: 4,
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              width: `${(frame / 1500) * 100}%`,
+              height: '100%',
+              backgroundColor: '#f59e0b',
+            }}
+          />
         </div>
-        <div style={{ fontSize: 24, fontWeight: 600, color: 'rgba(255, 255, 255, 0.7)', marginTop: 16, fontStyle: 'italic', letterSpacing: 0.5 }}>
-          {currentScene.enText}
+        <div
+          style={{
+            fontSize: 16,
+            color: '#64748b',
+            fontFamily: 'monospace',
+            letterSpacing: 2,
+          }}
+        >
+          PROSES PEMBUATAN KACA JENDELA • {Math.floor(frame / fps)}s / 50s
         </div>
       </div>
     </div>
