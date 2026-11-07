@@ -52,7 +52,8 @@ export const InflationScene: React.FC = () => {
       }}
     >
       {/* File Audio Voiceover di folder public */}
-      <Audio src={staticFile('voiceover.mp3')} />
+      {/* <Audio src={staticFile('voiceover.mp3')} /> */}
+
 
       {/* Label Badge Tema Kartun */}
       <div
