@@ -192,4 +192,30 @@ export const KineticStyle: React.FC = () => {
                     style={{
                       color: isHighlight ? '#ffcc00' : '#ffffff',
                       marginRight: 10,
-                      
+                      display: 'inline-block',
+                    }}
+                  >
+                    {word}
+                  </span>
+                );
+              })}
+            </div>
+
+            <div
+              style={{
+                fontSize: 22,
+                fontWeight: 500,
+                color: 'rgba(255, 255, 255, 0.65)',
+                marginTop: 10,
+                fontStyle: 'italic',
+                maxWidth: 800,
+              }}
+            >
+              {activeSub.textEn}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
