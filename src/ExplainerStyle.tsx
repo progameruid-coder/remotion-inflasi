@@ -13,7 +13,6 @@ export const ExplainerStyle: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Konfigurasi 3 Babak (Frame 0 - 1020)
   const scenes = [
     {
       start: 0,
@@ -60,7 +59,7 @@ export const ExplainerStyle: React.FC = () => {
     config: { damping: 14, mass: 0.6, stiffness: 140 },
   });
 
-  // Animasi Babak 1: Tetesan Getah
+  // Animasi Babak 1
   const dropCycle = frame % 30;
   const dropY = interpolate(dropCycle, [0, 24], [0, 110], {
     extrapolateLeft: 'clamp',
@@ -72,7 +71,7 @@ export const ExplainerStyle: React.FC = () => {
     extrapolateRight: 'clamp',
   });
 
-  // Animasi Babak 2: Pengadukan & Kekuatan
+  // Animasi Babak 2
   const rubberColorProgress = interpolate(frame, [270, 480], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -83,12 +82,6 @@ export const ExplainerStyle: React.FC = () => {
       extrapolateRight: 'clamp',
     })
   );
-
-  // Animasi Babak 3: Rajutan Kawat Baja
-  const steelWireProgress = interpolate(frame, [630, 850], [0, 100], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
 
   return (
     <div
@@ -475,90 +468,10 @@ export const ExplainerStyle: React.FC = () => {
             </div>
           </div>
         )}
-        {/* BABAK 3: POTONGAN LAPISAN SABUK BAJA (CUTAWAY RADIAL TIRE) */}
+        
+        {/* BABAK 3: PENAMPANG LAPISAN KAWAT BAJA (CROSS-SECTION) */}
         {activeIndex === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div
-              style={{
-                width: 480,
-                height: 480,
-                borderRadius: '50%',
-                backgroundColor: '#18181b',
-                border: '30px solid #09090b',
-                position: 'relative',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                boxShadow: '0 30px 70px rgba(0,0,0,0.95)',
-                overflow: 'hidden',
-              }}
-            >
-              {/* Gerigi Alur Luar Tapak Ban */}
-              {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg) => (
-                <div
-                  key={`b3-tread-${deg}`}
-                  style={{
-                    position: 'absolute',
-                    top: -14,
-                    width: 12,
-                    height: 20,
-                    backgroundColor: '#27272a',
-                    transform: `rotate(${deg}deg) translateY(-230px)`,
-                    borderRadius: 3,
-                  }}
-                />
-              ))}
-
-              {/* Jendela Penampang Potongan Karet Terbuka */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 25,
-                  width: 320,
-                  height: 150,
-                  backgroundColor: '#030712',
-                  border: '3px solid #38bdf8',
-                  borderRadius: 18,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 0 24px rgba(56, 189, 248, 0.45)',
-                  zIndex: 4,
-                }}
-              >
-                {/* Rajutan Kawat Baja Logam Menyilang */}
-                <svg width="320" height="110" style={{ position: 'absolute' }}>
-                  {[-60, -30, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360].map((x, idx) => (
-                    <line
-                      key={`wire-gold-${idx}`}
-                      x1={x}
-                      y1={0}
-                      x2={x + (50 * steelWireProgress) / 100}
-                      y2={110}
-                      stroke="#f59e0b"
-                      strokeWidth="3.5"
-                    />
-                  ))}
-                  {[-60, -30, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360].map((x, idx) => (
-                    <line
-                      key={`wire-silver-${idx}`}
-                      x1={x + 50}
-                      y1={0}
-                      x2={x + 50 - (50 * steelWireProgress) / 100}
-                      y2={110}
-                      stroke="#e2e8f0"
-                      strokeWidth="2.5"
-                    />
-                  ))}
-                </svg>
-
-                {/* Label Indikator Sabuk Baja */}
-        {/* BABAK 3: LAPISAN DEMI LAPISAN KAWAT BAJA (CROSS-SECTION ISOMETRIK) */}
-        {activeIndex === 2 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Panggung Mekanik Penampang Ban */}
             <div
               style={{
                 width: 480,
@@ -575,7 +488,6 @@ export const ExplainerStyle: React.FC = () => {
                 overflow: 'hidden',
               }}
             >
-              {/* Garis Grid Blueprint Pabrik */}
               <div
                 style={{
                   position: 'absolute',
@@ -586,7 +498,6 @@ export const ExplainerStyle: React.FC = () => {
                 }}
               />
 
-              {/* Tiga Tumpukan Lapisan Ban (Layer Stack) */}
               <div
                 style={{
                   position: 'relative',
@@ -598,7 +509,7 @@ export const ExplainerStyle: React.FC = () => {
                   justifyContent: 'center',
                 }}
               >
-                {/* 1. LAPISAN ATAS: KARET TAPAK LUAR (TREAD RUBBER) */}
+                {/* 1. KARET TAPAK LUAR */}
                 <div
                   style={{
                     width: 340,
@@ -610,7 +521,7 @@ export const ExplainerStyle: React.FC = () => {
                     alignItems: 'center',
                     justifyContent: 'space-around',
                     boxShadow: '0 10px 25px rgba(0,0,0,0.8)',
-                    zIndex: 5,flexDirection: 'column',
+                    zIndex: 5,
                     transform: `translateY(${interpolate(sceneProgress, [0, 80], [-80, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })}px)`,
                   }}
                 >
@@ -641,7 +552,7 @@ export const ExplainerStyle: React.FC = () => {
                   </span>
                 </div>
 
-                {/* 2. LAPISAN TENGAH: ANYAMAN KAWAT BAJA (STEEL BELTS) */}
+                {/* 2. LAPISAN ANYAMAN KAWAT BAJA */}
                 <div
                   style={{
                     width: 310,
@@ -659,7 +570,6 @@ export const ExplainerStyle: React.FC = () => {
                     zIndex: 4,
                   }}
                 >
-                  {/* Serat Kawat Logam Kuningan & Baja */}
                   <svg width="310" height="60" style={{ position: 'absolute' }}>
                     {[-30, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((x, idx) => (
                       <line
@@ -702,7 +612,7 @@ export const ExplainerStyle: React.FC = () => {
                   </div>
                 </div>
 
-                {/* 3. LAPISAN DASAR: RANGKA KARET DALAM (INNER PLY) */}
+                {/* 3. LAPISAN DASAR RANGKA KARET */}
                 <div
                   style={{
                     width: 340,
@@ -730,7 +640,6 @@ export const ExplainerStyle: React.FC = () => {
                 </div>
               </div>
 
-              {/* Status Tekanan Baja HUD */}
               <div
                 style={{
                   position: 'absolute',
@@ -749,7 +658,6 @@ export const ExplainerStyle: React.FC = () => {
               </div>
             </div>
 
-            {/* Label Deskripsi di Bawah */}
             <div
               style={{
                 marginTop: 22,
@@ -763,3 +671,89 @@ export const ExplainerStyle: React.FC = () => {
             </div>
           </div>
         )}
+      </div>
+
+      {/* SUBTITLE GAYA KONTEN INFLASI */}
+      <div
+        style={{
+          width: '90%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          transform: `scale(${subtitlePop})`,
+          zIndex: 20,
+          padding: '10px 20px',
+        }}
+      >
+        <div
+          style={{
+            fontSize: 32,
+            fontWeight: 900,
+            lineHeight: 1.35,
+            color: '#ffffff',
+            textShadow: '0 4px 16px rgba(0,0,0,1), 0 2px 4px rgba(0,0,0,0.9)',
+            letterSpacing: 0.5,
+          }}
+        >
+          {currentScene.scriptPrefix}
+          <span
+            style={{
+              color: '#facc15',
+              backgroundColor: 'rgba(234, 179, 8, 0.15)',
+              padding: '2px 8px',
+              borderRadius: 8,
+              border: '1px solid rgba(250, 204, 21, 0.4)',
+              boxShadow: '0 0 18px rgba(250, 204, 21, 0.35)',
+              display: 'inline-block',
+              marginLeft: 6,
+            }}
+          >
+            {currentScene.highlight}
+          </span>
+        </div>
+      </div>
+
+      {/* PROGRESS BAR */}
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 10,
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            width: '85%',
+            height: 8,
+            backgroundColor: 'rgba(255, 255, 255, 0.12)',
+            borderRadius: 6,
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              width: `${(frame / 1500) * 100}%`,
+              height: '100%',
+              backgroundColor:
+                activeIndex === 0 ? '#0d9488' : activeIndex === 1 ? '#eab308' : '#38bdf8',
+            }}
+          />
+        </div>
+        <div
+          style={{
+            fontSize: 16,
+            color: '#64748b',
+            fontFamily: 'monospace',
+            letterSpacing: 2,
+          }}
+        >
+          PROSES PEMBUATAN BAN MOBIL • {Math.floor(frame / fps)}s / 50s
+        </div>
+      </div>
+    </div>
+  );
+};
