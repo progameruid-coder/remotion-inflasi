@@ -1,7 +1,7 @@
 name: Render Video Remotion
 
 on:
-  workflow_dispatch: # Memungkinkan tombol Render manual ditekan kapan saja
+  workflow_dispatch:
 
 jobs:
   render:
@@ -15,12 +15,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
 
       - name: Render Video MP4
-        run: npx remotion render src/index.ts InflasiEdu out/inflasi-video.mp4
+        run: npm run build
 
       - name: Simpan Hasil Video
         uses: actions/upload-artifact@v4
