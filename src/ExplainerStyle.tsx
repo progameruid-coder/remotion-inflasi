@@ -131,6 +131,30 @@ export const ExplainerStyle: React.FC = () => {
         overflow: 'hidden',
       }}
     >
+            {/* 1. MUSIK LATAR (Sepanjang 30 detik) */}
+      <Sequence from={0} durationInFrames={900}>
+        <Audio src={staticFile('bgm.mp3')} volume={0.12} />
+      </Sequence>
+
+      {/* 2. EFEK SUARA */}
+      <Sequence from={220} durationInFrames={35}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+      </Sequence>
+      <Sequence from={475} durationInFrames={35}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+      </Sequence>
+      <Sequence from={715} durationInFrames={35}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+      </Sequence>
+
+      <Sequence from={250} durationInFrames={70}>
+        <Audio src={staticFile('cash.mp3')} volume={0.35} />
+      </Sequence>
+
+      <Sequence from={500} durationInFrames={40}>
+        <Audio src={staticFile('pop.mp3')} volume={0.35} />
+      </Sequence>
+
                     {/* VOICEOVER PER ADENGAN */}
               <Sequence from={0} durationInFrames={225}>
         <Audio src={staticFile('VO1.mp3')} volume={1} />
