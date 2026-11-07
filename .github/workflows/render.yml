@@ -1,0 +1,29 @@
+name: Render Video Remotion
+
+on:
+  workflow_dispatch: # Memungkinkan tombol Render manual ditekan kapan saja
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Render Video MP4
+        run: npx remotion render src/index.ts InflasiEdu out/inflasi-video.mp4
+
+      - name: Simpan Hasil Video
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-inflasi-mp4
+          path: out/inflasi-video.mp4
