@@ -147,75 +147,136 @@ export const ExplainerStyle: React.FC = () => {
             transform: `scale(${badgeScale})`,
             textAlign: 'center',
           }}
-        >
-          {currentScene.topBadge}
-        </div>
-      </div>
-
-      {/* 2. VISUAL TENGAH TEKNIKAL LEBIH BESAR */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: 720,
-          position: 'relative',
-          width: '100%',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            width: 620,
-            height: 620,
-            borderRadius: 36,
-            border: '2px dashed rgba(255,255,255,0.1)',
-            backgroundColor: 'rgba(255,255,255,0.02)',
-          }}
-        />
-
-        {/* SCENE 1: MANGKOK BAKSO UTUH + HARGA 20RB */}
+                {/* SCENE 1: MANGKOK BAKSO TAMPAK ATAS DETAIL */}
         {currentScene.id === 1 && (
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              transform: `scale(${bowlPop})`,
             }}
           >
-            {/* Uap Panas Makanan */}
-            <div style={{ display: 'flex', gap: 20, marginBottom: -10, transform: `translateY(-${steamY}px)` }}>
-              <span style={{ fontSize: 32, opacity: 0.6 }}>♨️</span>
-              <span style={{ fontSize: 32, opacity: 0.8 }}>♨️</span>
-            </div>
-
-            {/* Mangkok Besar */}
+            {/* Lingkaran Mangkok Keramik Putih */}
             <div
               style={{
-                width: 320,
-                height: 170,
+                width: 360,
+                height: 360,
+                borderRadius: '50%',
                 backgroundColor: '#f8fafc',
-                borderRadius: '0 0 160px 160px',
-                border: '6px solid #cbd5e1',
-                boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                border: '14px solid #e2e8f0',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.6), inset 0 6px 18px rgba(0,0,0,0.25)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 16,
+                position: 'relative',
               }}
             >
-              <div style={{ width: 65, height: 65, borderRadius: '50%', backgroundColor: '#78350f', border: '3px solid #b45309' }} />
-              <div style={{ width: 75, height: 75, borderRadius: '50%', backgroundColor: '#78350f', border: '3px solid #b45309' }} />
-              <div style={{ width: 65, height: 65, borderRadius: '50%', backgroundColor: '#78350f', border: '3px solid #b45309' }} />
+              {/* Garis Motif Biru Khas Mangkok Bakso */}
+              <div
+                style={{
+                  position: 'absolute',
+                  width: 334,
+                  height: 334,
+                  borderRadius: '50%',
+                  border: '3px solid #2563eb',
+                  opacity: 0.7,
+                }}
+              />
+
+              {/* Kuah Kaldu Sapi Berlemak */}
+              <div
+                style={{
+                  width: 290,
+                  height: 290,
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, #d97706 0%, #b45309 65%, #78350f 100%)',
+                  boxShadow: 'inset 0 10px 25px rgba(0,0,0,0.5)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {/* Mie Kuning & Bihun di Bawah Kuah */}
+                <svg
+                  width="280"
+                  height="280"
+                  viewBox="0 0 100 100"
+                  style={{ position: 'absolute', opacity: 0.55 }}
+                >
+                  <path d="M 20 40 Q 50 15 80 45" stroke="#facc15" strokeWidth="3" fill="none" />
+                  <path d="M 25 55 Q 55 85 75 50" stroke="#facc15" strokeWidth="2.5" fill="none" />
+                  <path d="M 30 30 Q 60 65 70 30" stroke="#ffffff" strokeWidth="2" fill="none" />
+                </svg>
+
+                {/* Bakso 1 (Tengah) */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 100,
+                    left: 100,
+                    width: 90,
+                    height: 90,
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle at 35% 35%, #9a3412 0%, #6c230b 60%, #431407 100%)',
+                    boxShadow: '4px 6px 14px rgba(0,0,0,0.6)',
+                    border: '2px solid #b45309',
+                  }}
+                />
+                {/* Bakso 2 (Kiri Atas) */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 45,
+                    left: 60,
+                    width: 72,
+                    height: 72,
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle at 35% 35%, #9a3412 0%, #6c230b 60%, #431407 100%)',
+                    boxShadow: '3px 5px 12px rgba(0,0,0,0.55)',
+                    border: '2px solid #b45309',
+                  }}
+                />
+                {/* Bakso 3 (Kanan Bawah) */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: 45,
+                    right: 65,
+                    width: 68,
+                    height: 68,
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle at 35% 35%, #9a3412 0%, #6c230b 60%, #431407 100%)',
+                    boxShadow: '3px 5px 12px rgba(0,0,0,0.55)',
+                    border: '2px solid #b45309',
+                  }}
+                />
+
+                {/* Taburan Daun Seledri & Bawang Goreng */}
+                <div style={{ position: 'absolute', top: 85, right: 90, width: 14, height: 8, backgroundColor: '#22c55e', borderRadius: 4, transform: 'rotate(25deg)' }} />
+                <div style={{ position: 'absolute', bottom: 105, left: 80, width: 12, height: 7, backgroundColor: '#16a34a', borderRadius: 4, transform: 'rotate(-40deg)' }} />
+                <div style={{ position: 'absolute', top: 140, right: 75, width: 10, height: 5, backgroundColor: '#78350f', borderRadius: 2 }} />
+                <div style={{ position: 'absolute', top: 125, left: 110, width: 8, height: 4, backgroundColor: '#92400e', borderRadius: 2 }} />
+              </div>
             </div>
 
             <div
               style={{
-                marginTop: 30,
+                marginTop: 26,
                 backgroundColor: '#16a34a',
                 padding: '10px 28px',
+                borderRadius: 20,
+                fontWeight: 900,
+                fontSize: 26,
+                letterSpacing: 1,
+                boxShadow: '0 4px 15px rgba(22,163,74,0.4)',
+              }}
+            >
+              PORSI LENGKAP 100%
+            </div>
+          </div>
+        )}
                 borderRadius: 20,
                 fontWeight: 900,
                 fontSize: 28,
@@ -228,123 +289,272 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* SCENE 2: MESIN CETAK UANG MASAL BERPUTAR */}
+        {/        {/* SCENE 2: MESIN CETAK UANG OFFSET INDUSTRI REALISTIS */}
         {currentScene.id === 2 && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              position: 'relative',
+              width: 520,
+              height: 540,
+              justifyContent: 'center',
+            }}
+          >
+            {/* Rangka Bodi Mesin Cetak Industri */}
             <div
               style={{
-                width: 340,
-                height: 80,
-                backgroundColor: '#334155',
-                borderRadius: 40,
-                border: '5px solid #64748b',
+                width: 440,
+                height: 230,
+                backgroundColor: '#1e293b',
+                borderRadius: 20,
+                border: '6px solid #475569',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.6), inset 0 2px 8px rgba(255,255,255,0.1)',
+                position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                zIndex: 3,
+              }}
+            >
+              {/* Panel Status & Tombol Industri */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 14,
+                  left: 20,
+                  display: 'flex',
+                  gap: 8,
+                  alignItems: 'center',
+                }}
+              >
+                <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
+                <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ef4444' }} />
+                <span style={{ fontSize: 13, fontWeight: 900, color: '#94a3b8', letterSpacing: 1, marginLeft: 6 }}>
+                  PRINT-UNIT #01
+                </span>
+              </div>
+
+              {/* Roda Gigi Bergerigi Samping Berputar */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: -28,
+                  width: 56,
+                  height: 56,
+                  borderRadius: '50%',
+                  border: '6px dashed #64748b',
+                  backgroundColor: '#334155',
+                  transform: `rotate(${rollerAngle * 1.5}deg)`,
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.5)',
+                }}
+              />
+
+              {/* Dua Silinder Baja Penjepit Kertas (Atas & Bawah) */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
+                {/* Silinder Atas */}
+                <div
+                  style={{
+                    width: 320,
+                    height: 55,
+                    borderRadius: 28,
+                    background: 'linear-gradient(180deg, #94a3b8 0%, #475569 50%, #1e293b 100%)',
+                    border: '3px solid #cbd5e1',
+                    boxShadow: 'inset 0 4px 6px rgba(255,255,255,0.4)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {/* Garis Grid Plat Tekstur Cetak */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      width: '100%',
+                      height: '100%',
+                      backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(0,0,0,0.3) 15px, rgba(0,0,0,0.3) 20px)',
+                      transform: `translateX(${(frame * 6) % 20}px)`,
+                    }}
+                  />
+                </div>
+
+                {/* Celah Lembaran Uang Keluar */}
+                <div style={{ width: 340, height: 4, backgroundColor: '#000000', opacity: 0.8 }} />
+
+                {/* Silinder Bawah */}
+                <div
+                  style={{
+                    width: 320,
+                    height: 55,
+                    borderRadius: 28,
+                    background: 'linear-gradient(0deg, #94a3b8 0%, #475569 50%, #1e293b 100%)',
+                    border: '3px solid #cbd5e1',
+                    boxShadow: 'inset 0 -4px 6px rgba(255,255,255,0.4)',
+                  }}
+                />
+              </div>
+
+              {/* Indikator Kecepatan RPM */}
+              <div
+                style={{
+                  position: 'absolute',
+                  right: 20,
+                  top: 14,
+                  backgroundColor: '#0f172a',
+                  padding: '4px 10px',
+                  borderRadius: 6,
+                  border: '1px solid #334155',
+                  fontSize: 12,
+                  fontWeight: 900,
+                  color: '#38bdf8',
+                }}
+              >
+                HIGH SPEED
+              </div>
+            </div>
+
+            {/* Lembaran Uang Rupiah yang Keluar Meluncur */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 220,
+                width: 250,
+                height: 125,
+                background: 'linear-gradient(135deg, #166534 0%, #15803d 50%, #14532d 100%)',
+                borderRadius: 12,
+                border: '3px solid #4ade80',
+                boxShadow: '0 12px 30px rgba(22,101,52,0.6)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                padding: '10px 14px',
+                color: '#ffffff',
+                transform: `translateY(${billDropY}px)`,
                 zIndex: 2,
               }}
             >
-              <div
-                style={{
-                  width: 260,
-                  height: 12,
-                  backgroundColor: '#38bdf8',
-                  borderRadius: 6,
-                  transform: `rotate(${rollerAngle}deg)`,
-                }}
-              />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 13, fontWeight: 900, color: '#86efac' }}>BANK INDONESIA</span>
+                <span style={{ fontSize: 11, color: '#cbd5e1' }}>100000</span>
+              </div>
+              <div style={{ textAlign: 'center', fontSize: 30, fontWeight: 900, letterSpacing: 1, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                Rp 100.000
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#86efac' }}>
+                <span>EMISI 2024</span>
+                <span>SERI NO. 99482</span>
+              </div>
             </div>
 
-            {/* Lembaran Uang Meluncur Turun */}
+            {/* Baki Nampan Logam & Tumpukan Uang di Bawah */}
             <div
               style={{
-                width: 240,
-                height: 130,
-                backgroundColor: '#15803d',
-                borderRadius: 14,
-                border: '4px solid #4ade80',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                fontWeight: 900,
-                fontSize: 30,
-                marginTop: -20,
-                transform: `translateY(${billDropY}px)`,
-                zIndex: 1,
-              }}
-            >
-              <div>Rp 100.000</div>
-              <div style={{ fontSize: 14, opacity: 0.8 }}>CETAK MASAL</div>
-            </div>
-
-            {/* Tumpukan Uang Membesar di Bawah */}
-            <div
-              style={{
-                width: 360,
-                height: stackGrowth,
-                backgroundColor: '#166534',
-                borderRadius: 14,
-                marginTop: 140,
+                position: 'absolute',
+                bottom: 20,
+                width: 420,
+                height: 70,
+                backgroundColor: '#0f172a',
+                borderRadius: 16,
                 border: '4px solid #22c55e',
-                boxShadow: '0 10px 25px rgba(22,101,52,0.6)',
+                boxShadow: '0 14px 35px rgba(0,0,0,0.7)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontWeight: 900,
-                fontSize: 22,
-                letterSpacing: 2,
+                flexDirection: 'column',
+                zIndex: 4,
               }}
             >
-              BANJIR PASOKAN UANG
+              <div style={{ fontSize: 20, fontWeight: 900, color: '#4ade80', letterSpacing: 2 }}>
+                OUTPUT: BANJIR LIKUIDITAS
+              </div>
+              <div style={{ fontSize: 13, color: '#94a3b8', marginTop: 2 }}>
+                Pasokan Uang Melonjak Tajam
+              </div>
             </div>
           </div>
         )}
 
-        {/* SCENE 3: PORSI MENYUSUT & TERSISA SEDIKIT */}
+                {/* SCENE 3: PORSI BAKSO MENYUSUT TAMPAK ATAS */}
         {currentScene.id === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
               style={{
-                width: 320,
-                height: 170,
+                width: 360,
+                height: 360,
+                borderRadius: '50%',
                 backgroundColor: '#f8fafc',
-                borderRadius: '0 0 160px 160px',
-                border: '6px solid #cbd5e1',
-                boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                border: '14px solid #e2e8f0',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.6), inset 0 6px 18px rgba(0,0,0,0.25)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
               }}
             >
-              {/* Bakso Mengecil di Pojok */}
+              {/* Garis Motif Biru */}
               <div
                 style={{
-                  transform: `scale(${meatballScale})`,
+                  position: 'absolute',
+                  width: 334,
+                  height: 334,
+                  borderRadius: '50%',
+                  border: '3px solid #2563eb',
+                  opacity: 0.7,
+                }}
+              />
+
+              {/* Kuah Lebih Gelap & Menyusut */}
+              <div
+                style={{
+                  width: 290,
+                  height: 290,
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, #78350f 0%, #451a03 100%)',
+                  boxShadow: 'inset 0 10px 25px rgba(0,0,0,0.6)',
+                  position: 'relative',
+                  overflow: 'hidden',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <div style={{ width: 65, height: 65, borderRadius: '50%', backgroundColor: '#78350f', border: '3px solid #b45309' }} />
-              </div>
+                {/* 1 Bakso Saja yang Menyusut di Pojok */}
+                <div
+                  style={{
+                    transform: `scale(${meatballScale})`,
+                    position: 'absolute',
+                    top: 100,
+                    left: 100,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 90,
+                      height: 90,
+                      borderRadius: '50%',
+                      background: 'radial-gradient(circle at 35% 35%, #9a3412 0%, #6c230b 60%, #431407 100%)',
+                      boxShadow: '4px 6px 14px rgba(0,0,0,0.6)',
+                      border: '2px solid #b45309',
+                    }}
+                  />
+                </div>
 
-              {/* Tanda Silang Porsi Hilang */}
-              <div style={{ position: 'absolute', right: 60, fontSize: 38, opacity: 0.35 }}>
-                ❌
+                {/* Tanda Silang Porsi Hilang */}
+                <div style={{ position: 'absolute', top: 50, right: 65, fontSize: 44, opacity: 0.4 }}>❌</div>
+                <div style={{ position: 'absolute', bottom: 55, left: 65, fontSize: 44, opacity: 0.4 }}>❌</div>
               </div>
             </div>
 
             <div
               style={{
-                marginTop: 30,
+                marginTop: 26,
                 backgroundColor: '#ef4444',
                 padding: '10px 28px',
                 borderRadius: 20,
                 fontWeight: 900,
                 fontSize: 26,
                 letterSpacing: 1,
+                boxShadow: '0 4px 15px rgba(239,68,68,0.4)',
               }}
             >
               PORSI TERGERUS -50%
