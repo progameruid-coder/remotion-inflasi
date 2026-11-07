@@ -20,14 +20,16 @@ export const ExplainerStyle: React.FC = () => {
       duration: 240,
       badge: '1 • GETAH POHON KARET',
       subtitle: 'PENYADAPAN LATEKS ALAMI',
-      script: 'Getah pohon karet aslinya lembek dan gampang meleleh, tapi bisa diolah menahan beban mobil hingga berton-ton!',
+      scriptPrefix: 'Getah pohon karet aslinya lembek, tapi bisa menahan beban ',
+      highlight: 'MOBIL BERTON-TON!',
     },
     {
       start: 240,
       duration: 360,
       badge: '2 • VULKANISASI BELERANG',
       subtitle: 'CAMPURAN CARBON & SULFUR',
-      script: 'Karet dicampur bubuk sulfur dan carbon black agar warna hitam pekat sekaligus mengikat rantai molekul jadi 10x lebih kuat.',
+      scriptPrefix: 'Karet dicampur belerang & carbon black agar mengikat molekul jadi ',
+      highlight: '10X LEBIH KUAT!',
     },
   ];
 
@@ -44,10 +46,10 @@ export const ExplainerStyle: React.FC = () => {
     config: { damping: 12, mass: 0.5, stiffness: 120 },
   });
 
-  const subtitleOpacity = spring({
+  const subtitlePop = spring({
     frame: sceneProgress,
     fps,
-    config: { damping: 15, mass: 0.5 },
+    config: { damping: 14, mass: 0.6, stiffness: 140 },
   });
 
   // Animasi Babak 1: Tetesan Getah
@@ -264,122 +266,179 @@ export const ExplainerStyle: React.FC = () => {
             </div>
           </div>
         )}
-        {/* BABAK 2: TANGKI PENCAMPUR & REAKSI VULKANISASI */}
+        {/* BABAK 2: MESIN PENGADUK KOMPON (BANBURY MIXER) */}
         {activeIndex === 1 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Tangki Reaktor Pengaduk Silinder Industri */}
             <div
               style={{
-                width: 440,
-                height: 440,
-                borderRadius: '36px',
-                background: 'linear-gradient(145deg, #1e293b, #0f172a)',
-                border: '5px solid #334155',
+                width: 460,
+                height: 480,
+                backgroundColor: '#111827',
+                borderRadius: 28,
+                border: '4px solid #374151',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.9)',
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'center',
                 alignItems: 'center',
-                boxShadow: '0 25px 60px rgba(0,0,0,0.9)',
+                padding: '20px 20px',
                 overflow: 'hidden',
               }}
             >
-              {/* Batang Pengaduk Berputar */}
+              {/* Dua Corong Input Bahan di Atas */}
               <div
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  width: 14,
-                  height: 180,
-                  backgroundColor: '#94a3b8',
-                  borderRadius: 7,
-                  zIndex: 4,
-                  boxShadow: '0 4px 10px rgba(0,0,0,0.6)',
-                }}
-              />
-
-              {/* Wadah Adonan Karet yang Berubah Warna */}
-              <div
-                style={{
-                  width: 340,
-                  height: 340,
-                  borderRadius: '50%',
-                  backgroundColor: `rgb(${Math.round(245 - rubberColorProgress * 225)}, ${Math.round(245 - rubberColorProgress * 225)}, ${Math.round(245 - rubberColorProgress * 220)})`,
-                  border: '6px solid #eab308',
-                  boxShadow: '0 0 45px rgba(234, 179, 8, 0.45)',
+                  width: '100%',
                   display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'background-color 0.1s ease',
+                  justifyContent: 'space-between',
+                  padding: '0 30px',
+                  zIndex: 10,
                 }}
               >
-                {/* Partikel Sulfur Kuning Jatuh Mengaduk */}
-                {[0, 1, 2, 3, 4, 5].map((s) => (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <div
-                    key={`sulfur-${s}`}
                     style={{
-                      position: 'absolute',
-                      top: 40 + ((frame * 3 + s * 45) % 240),
-                      left: 50 + (s * 50) % 250,
-                      width: 22,
-                      height: 22,
-                      backgroundColor: '#facc15',
-                      borderRadius: '50%',
-                      boxShadow: '0 0 12px #facc15',
-                      transform: `rotate(${frame * 4}deg)`,
+                      width: 110,
+                      height: 40,
+                      backgroundColor: '#eab308',
+                      clipPath: 'polygon(0 0, 100% 0, 75% 100%, 25% 100%)',
+                      boxShadow: '0 4px 12px rgba(234, 179, 8, 0.4)',
                     }}
                   />
-                ))}
-
-                {/* Butiran Carbon Black */}
-                {[0, 1, 2, 3].map((c) => (
-                  <div
-                    key={`carbon-${c}`}
-                    style={{
-                      position: 'absolute',
-                      top: 60 + ((frame * 2 + c * 60) % 220),
-                      right: 40 + (c * 55) % 240,
-                      width: 18,
-                      height: 18,
-                      backgroundColor: '#09090b',
-                      borderRadius: 4,
-                      border: '1px solid #52525b',
-                    }}
-                  />
-                ))}
-
-                {/* Label Formula Bahan */}
-                <div
-                  style={{
-                    backgroundColor: 'rgba(15, 23, 42, 0.85)',
-                    padding: '8px 22px',
-                    borderRadius: 30,
-                    border: '1.5px solid #eab308',
-                    fontSize: 20,
-                    fontWeight: 900,
-                    color: '#facc15',
-                    zIndex: 5,
-                    marginBottom: 8,
-                  }}
-                >
-                  + CARBON BLACK
+                  <span style={{ fontSize: 13, fontWeight: 900, color: '#facc15', marginTop: 4 }}>
+                    SULFUR
+                  </span>
                 </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <div
+                    style={{
+                      width: 110,
+                      height: 40,
+                      backgroundColor: '#1f2937',
+                      border: '2px solid #4b5563',
+                      clipPath: 'polygon(0 0, 100% 0, 75% 100%, 25% 100%)',
+                    }}
+                  />
+                  <span style={{ fontSize: 13, fontWeight: 900, color: '#9ca3af', marginTop: 4 }}>
+                    CARBON
+                  </span>
+                </div>
+              </div>
+
+              {/* Partikel Bahan Jatuh Masuk ke Mesin */}
+              {[0, 1, 2, 3].map((i) => (
+                <div
+                  key={`sulfur-drop-${i}`}
+                  style={{
+                    position: 'absolute',
+                    top: 70 + ((frame * 5 + i * 40) % 90),
+                    left: 75 + i * 8,
+                    width: 10,
+                    height: 10,
+                    backgroundColor: '#facc15',
+                    borderRadius: '50%',
+                    boxShadow: '0 0 8px #facc15',
+                  }}
+                />
+              ))}
+              {[0, 1, 2, 3].map((i) => (
+                <div
+                  key={`carbon-drop-${i}`}
+                  style={{
+                    position: 'absolute',
+                    top: 70 + ((frame * 5 + i * 40) % 90),
+                    right: 75 + i * 8,
+                    width: 10,
+                    height: 10,
+                    backgroundColor: '#030712',
+                    border: '1.5px solid #6b7280',
+                    borderRadius: 3,
+                  }}
+                />
+              ))}
+
+              {/* Ruang Penggilingan (Chamber) */}
+              <div
+                style={{
+                  width: 380,
+                  height: 310,
+                  backgroundColor: '#030712',
+                  borderRadius: 24,
+                  border: '3px solid #1f2937',
+                  marginTop: 15,
+                  position: 'relative',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  overflow: 'hidden',
+                }}
+              >
                 <div
                   style={{
-                    backgroundColor: 'rgba(15, 23, 42, 0.85)',
-                    padding: '6px 18px',
-                    borderRadius: 30,
-                    border: '1.5px solid #cbd5e1',
-                    fontSize: 18,
-                    fontWeight: 800,
-                    color: '#f8fafc',
-                    zIndex: 5,
+                    position: 'absolute',
+                    inset: 0,
+                    backgroundImage: 'radial-gradient(circle, rgba(234, 179, 8, 0.15) 0%, transparent 70%)',
+                  }}
+                />
+
+                {/* Rol Penggiling Kiri */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: 55,
+                    width: 105,
+                    height: 105,
+                    borderRadius: '50%',
+                    border: '8px dashed #4b5563',
+                    backgroundColor: '#1f2937',
+                    transform: `rotate(${frame * 4}deg)`,
+                    boxShadow: 'inset 0 0 15px rgba(0,0,0,0.8)',
+                  }}
+                />
+
+                {/* Rol Penggiling Kanan */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    right: 55,
+                    width: 105,
+                    height: 105,
+                    borderRadius: '50%',
+                    border: '8px dashed #4b5563',
+                    backgroundColor: '#1f2937',
+                    transform: `rotate(${-frame * 4}deg)`,
+                    boxShadow: 'inset 0 0 15px rgba(0,0,0,0.8)',
+                  }}
+                />
+
+                {/* Gumpalan Adonan Karet di Tengah Rol */}
+                <div
+                  style={{
+                    width: 210,
+                    height: 140,
+                    borderRadius: '45% 55% 50% 50% / 50% 50% 60% 40%',
+                    backgroundColor: `rgb(${Math.round(235 - rubberColorProgress * 215)}, ${Math.round(235 - rubberColorProgress * 215)}, ${Math.round(230 - rubberColorProgress * 210)})`,
+                    border: '3px solid rgba(250, 204, 21, 0.4)',
+                    boxShadow: `0 0 25px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,0,0,${0.3 + rubberColorProgress * 0.5})`,
+                    transform: `scale(${1 + Math.sin(frame / 4) * 0.05})`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 6,
                   }}
                 >
-                  + SULFUR (BELERANG)
+                  <span
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 900,
+                      color: rubberColorProgress > 0.5 ? '#facc15' : '#030712',
+                      letterSpacing: 1,
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {rubberColorProgress > 0.7 ? 'KOMPON KARET' : 'PENGADUKAN'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -387,7 +446,7 @@ export const ExplainerStyle: React.FC = () => {
             {/* Indikator Kekuatan Tarik HUD */}
             <div
               style={{
-                marginTop: 25,
+                marginTop: 22,
                 fontSize: 32,
                 fontWeight: 900,
                 color: '#facc15',
@@ -402,34 +461,44 @@ export const ExplainerStyle: React.FC = () => {
         )}
       </div>
 
-      {/* SUBTITLE KOTAK AMAN (SAFE ZONE) */}
+      {/* SUBTITLE GAYA KONTEN INFLASI (KINETIC BOLD TANPA BOKS KAKU) */}
       <div
         style={{
           width: '90%',
-          minHeight: 110,
-          backgroundColor: 'rgba(15, 23, 42, 0.88)',
-          border: '1.5px solid rgba(13, 148, 136, 0.4)',
-          borderRadius: 20,
-          padding: '16px 28px',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           textAlign: 'center',
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.6)',
-          opacity: subtitleOpacity,
+          transform: `scale(${subtitlePop})`,
           zIndex: 20,
+          padding: '10px 20px',
         }}
       >
         <div
           style={{
-            fontSize: 28,
-            fontWeight: 700,
-            lineHeight: 1.4,
-            color: '#f8fafc',
-            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
+            fontSize: 32,
+            fontWeight: 900,
+            lineHeight: 1.35,
+            color: '#ffffff',
+            textShadow: '0 4px 16px rgba(0,0,0,1), 0 2px 4px rgba(0,0,0,0.9)',
+            letterSpacing: 0.5,
           }}
         >
-          {currentScene.script}
+          {currentScene.scriptPrefix}
+          <span
+            style={{
+              color: '#facc15',
+              backgroundColor: 'rgba(234, 179, 8, 0.15)',
+              padding: '2px 8px',
+              borderRadius: 8,
+              border: '1px solid rgba(250, 204, 21, 0.4)',
+              boxShadow: '0 0 18px rgba(250, 204, 21, 0.35)',
+              display: 'inline-block',
+              marginLeft: 6,
+            }}
+          >
+            {currentScene.highlight}
+          </span>
         </div>
       </div>
 
