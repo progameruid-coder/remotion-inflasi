@@ -665,7 +665,7 @@ export const ExplainerStyle: React.FC = () => {
                 {word}
               </span>
             );
-          })}
+          })
         </div>
 
         <div
