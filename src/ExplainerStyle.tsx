@@ -13,7 +13,6 @@ export const ExplainerStyle: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Konfigurasi 5 Babak Lengkap (Total 1500 frame = 50 detik)
   const scenes = [
     {
       start: 0,
@@ -76,7 +75,7 @@ export const ExplainerStyle: React.FC = () => {
     config: { damping: 14, mass: 0.6, stiffness: 140 },
   });
 
-  // Babak 1
+  // Animasi Babak 1
   const dropCycle = frame % 30;
   const dropY = interpolate(dropCycle, [0, 24], [0, 110], {
     extrapolateLeft: 'clamp',
@@ -88,7 +87,7 @@ export const ExplainerStyle: React.FC = () => {
     extrapolateRight: 'clamp',
   });
 
-  // Babak 2
+  // Animasi Babak 2
   const rubberColorProgress = interpolate(frame, [270, 480], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -100,7 +99,7 @@ export const ExplainerStyle: React.FC = () => {
     })
   );
 
-  // Babak 4
+  // Animasi Babak 4
   const moldPressY = interpolate(frame, [1030, 1130], [80, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -110,14 +109,26 @@ export const ExplainerStyle: React.FC = () => {
     extrapolateRight: 'clamp',
   });
 
-  // Babak 5: Beban Tekan & Efek Pegas Ban
-  const loadWeight = Math.round(
-    interpolate(frame, [1270, 1440], [500, 3200], {
+  // Animasi Babak 5 (Truk & Close-up Zoom)
+  const b5Progress = Math.max(0, frame - 1260);
+  const cameraZoom = interpolate(b5Progress, [0, 80, 150], [1, 1, 2.7], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const cameraPanX = interpolate(b5Progress, [0, 80, 150], [0, 0, -210], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const cameraPanY = interpolate(b5Progress, [0, 80, 150], [0, 0, -110], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const truckWeight = Math.round(
+    interpolate(b5Progress, [10, 140], [4500, 32000], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     })
   );
-  const tireSquish = interpolate(loadWeight, [500, 3200], [0, 16]);
 
   return (
     <div
@@ -830,151 +841,278 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-                {/* BABAK 5: RODA MOBIL UTUH & UJI TEKANAN BEBAN */}
+                {/* BABAK 5: TRUK MUATAN BERAT & CLOSE-UP BAN */}
         {activeIndex === 4 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Balok Mesin Penekan Beban dari Atas */}
-            <div
-              style={{
-                width: 280,
-                height: 38,
-                backgroundColor: '#334155',
-                borderRadius: 10,
-                border: '2px solid #64748b',
-                marginBottom: 8,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 16,
-                fontWeight: 900,
-                color: '#f8fafc',
-                letterSpacing: 1,
-                boxShadow: '0 6px 16px rgba(0,0,0,0.6)',
-              }}
-            >
-              ▼ BEBAN TEKAN KENDARAAN ▼
-            </div>
-
-            {/* BAN MOBIL UTUH DENGAN VELG RACING BINTANG */}
-            <div
-              style={{
-                width: 460,
-                height: 460,
-                borderRadius: '50%',
-                backgroundColor: '#18181b',
-                border: '34px solid #09090b',
-                position: 'relative',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                boxShadow: '0 30px 60px rgba(0,0,0,0.95)',
-                transform: `scaleY(${1 - tireSquish / 460})`,
-              }}
-            >
-              {/* Gerigi Alur Tapak Luar (12 Alur Presisi) */}
-              {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg) => (
-                <div
-                  key={`tire5-tread-${deg}`}
-                  style={{
-                    position: 'absolute',
-                    top: -16,
-                    width: 14,
-                    height: 22,
-                    backgroundColor: '#27272a',
-                    transform: `rotate(${deg}deg) translateY(-220px)`,
-                    borderRadius: 3,
-                  }}
-                />
-              ))}
-
-              {/* Tulisan Timbul Dinding Samping Ban */}
-              <div
-                style={{
-                  position: 'absolute',
-                  fontSize: 13,
-                  fontWeight: 900,
-                  color: '#52525b',
-                  letterSpacing: 3,
-                  transform: 'translateY(-170px)',
-                }}
-              >
-                RADIAL STEEL 225/55 R18
-              </div>
-
-              {/* VELG RACING PALANG 5 BINTANG */}
-              <div
-                style={{
-                  width: 240,
-                  height: 240,
-                  borderRadius: '50%',
-                  backgroundColor: '#0f172a',
-                  border: '10px solid #cbd5e1',
-                  position: 'relative',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  boxShadow: '0 0 35px rgba(203, 213, 225, 0.45)',
-                }}
-              >
-                {[0, 72, 144, 216, 288].map((rot) => (
-                  <div
-                    key={`velg-spoke-${rot}`}
-                    style={{
-                      position: 'absolute',
-                      width: 18,
-                      height: 100,
-                      background: 'linear-gradient(180deg, #cbd5e1 0%, #475569 100%)',
-                      borderRadius: 8,
-                      transform: `rotate(${rot}deg) translateY(-40px)`,
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.7)',
-                    }}
-                  />
-                ))}
-
-                {/* Hub Tengah Velg */}
-                <div
-                  style={{
-                    width: 65,
-                    height: 65,
-                    borderRadius: '50%',
-                    backgroundColor: '#020617',
-                    border: '5px solid #cbd5e1',
-                    zIndex: 5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div style={{ width: 20, height: 20, borderRadius: '50%', backgroundColor: '#10b981' }} />
-                </div>
-              </div>
-            </div>
-
-            {/* Landasan Aspal Jalanan */}
             <div
               style={{
                 width: 500,
-                height: 16,
-                backgroundColor: '#334155',
-                borderRadius: 8,
-                marginTop: 8,
-                boxShadow: '0 6px 20px rgba(0,0,0,0.8)',
-              }}
-            />
-
-            {/* Monitor Daya Tahan Beban Berton-ton */}
-            <div
-              style={{
-                marginTop: 18,
-                fontSize: 34,
-                color: '#10b981',
-                fontWeight: 900,
-                fontFamily: 'monospace',
-                letterSpacing: 2,
-                textShadow: '0 0 16px rgba(16, 185, 129, 0.6)',
+                height: 480,
+                backgroundColor: '#0c1322',
+                borderRadius: 28,
+                border: '3px solid #1e293b',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.95)',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
-              BEBAN TERTOPANG: {loadWeight} KG
+              {/* Kanvas Zoom & Pan */}
+              <div
+                style={{
+                  position: 'absolute',
+                  width: 480,
+                  height: 440,
+                  transform: `scale(${cameraZoom}) translate(${cameraPanX}px, ${cameraPanY}px)`,
+                  transformOrigin: 'center center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {/* Truk Pengangkut Logistik */}
+                <div style={{ position: 'relative', width: 440, height: 240, display: 'flex', alignItems: 'flex-end' }}>
+                  {/* Kontainer Muatan Berat */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: 10,
+                      bottom: 60,
+                      width: 270,
+                      height: 150,
+                      backgroundColor: '#1e3a5f',
+                      borderRadius: '12px 6px 6px 6px',
+                      border: '3px solid #38bdf8',
+                      boxShadow: '0 10px 25px rgba(0,0,0,0.7)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      padding: 10,
+                    }}
+                  >
+                    <span style={{ fontSize: 13, fontWeight: 900, color: '#93c5fd', letterSpacing: 2 }}>
+                      HEAVY CARGO
+                    </span>
+                    <div
+                      style={{
+                        marginTop: 8,
+                        backgroundColor: '#0f172a',
+                        padding: '4px 12px',
+                        borderRadius: 6,
+                        border: '1.5px solid #facc15',
+                        fontSize: 16,
+                        fontWeight: 900,
+                        color: '#facc15',
+                        fontFamily: 'monospace',
+                      }}
+                    >
+                      {truckWeight} KG
+                    </div>
+                  </div>
+
+                  {/* Kepala Kabin Truk */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      right: 25,
+                      bottom: 60,
+                      width: 125,
+                      height: 140,
+                      backgroundColor: '#dc2626',
+                      borderRadius: '18px 24px 6px 6px',
+                      border: '3px solid #f87171',
+                      boxShadow: '0 10px 25px rgba(0,0,0,0.6)',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 85,
+                        height: 50,
+                        backgroundColor: '#38bdf8',
+                        margin: '12px 0 0 10px',
+                        borderRadius: '8px 16px 4px 4px',
+                        border: '2px solid #bae6fd',
+                        opacity: 0.85,
+                      }}
+                    />
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: 15,
+                        right: 8,
+                        width: 14,
+                        height: 18,
+                        backgroundColor: '#facc15',
+                        borderRadius: 4,
+                        boxShadow: '0 0 12px #facc15',
+                      }}
+                    />
+                  </div>
+
+                  {/* Sasis Rangka Baja Truk */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: 10,
+                      bottom: 48,
+                      width: 410,
+                      height: 16,
+                      backgroundColor: '#334155',
+                      borderRadius: 4,
+                    }}
+                  />
+
+                  {/* Roda Belakang 1 (Target Kamera Zoom) */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: 35,
+                      bottom: 8,
+                      width: 75,
+                      height: 75,
+                      borderRadius: '50%',
+                      backgroundColor: '#09090b',
+                      border: '7px solid #27272a',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: b5Progress > 90 ? '0 0 25px #10b981' : '0 6px 15px rgba(0,0,0,0.9)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: '50%',
+                        backgroundColor: '#0f172a',
+                        border: '3px solid #cbd5e1',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#10b981' }} />
+                    </div>
+                  </div>
+
+                  {/* Roda Belakang 2 */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      left: 130,
+                      bottom: 8,
+                      width: 75,
+                      height: 75,
+                      borderRadius: '50%',
+                      backgroundColor: '#09090b',
+                      border: '7px solid #27272a',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 6px 15px rgba(0,0,0,0.9)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: '50%',
+                        backgroundColor: '#0f172a',
+                        border: '3px solid #cbd5e1',
+                      }}
+                    />
+                  </div>
+
+                  {/* Roda Depan */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      right: 45,
+                      bottom: 8,
+                      width: 75,
+                      height: 75,
+                      borderRadius: '50%',
+                      backgroundColor: '#09090b',
+                      border: '7px solid #27272a',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 6px 15px rgba(0,0,0,0.9)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: '50%',
+                        backgroundColor: '#0f172a',
+                        border: '3px solid #cbd5e1',
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Aspal Jalanan */}
+                <div
+                  style={{
+                    width: 460,
+                    height: 14,
+                    backgroundColor: '#334155',
+                    borderRadius: 6,
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.8)',
+                  }}
+                />
+              </div>
+
+              {/* HUD Indikator Close-up Ban */}
+              {b5Progress > 95 && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 20,
+                    backgroundColor: 'rgba(2, 6, 23, 0.92)',
+                    padding: '8px 20px',
+                    borderRadius: 20,
+                    border: '1.5px solid #10b981',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    boxShadow: '0 0 20px rgba(16, 185, 129, 0.4)',
+                  }}
+                >
+                  <span style={{ fontSize: 13, fontWeight: 900, color: '#94a3b8', letterSpacing: 1 }}>
+                    TARGET CLOSE-UP: RODA TRUK
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 18,
+                      fontWeight: 900,
+                      color: '#10b981',
+                      fontFamily: 'monospace',
+                      marginTop: 2,
+                    }}
+                  >
+                    BEBAN TERTAHAN: 8.000 KG / BAN
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div
+              style={{
+                marginTop: 22,
+                fontSize: 22,
+                color: '#10b981',
+                fontWeight: 700,
+                letterSpacing: 1.5,
+              }}
+            >
+              {b5Progress < 95 ? 'TRUK MUATAN 32 TON MELAJU' : 'BAN KARET BAJA MENAHAN TEKANAN EKSTREM'}
             </div>
           </div>
         )}
@@ -991,527 +1129,85 @@ export const ExplainerStyle: React.FC = () => {
           transform: `scale(${subtitlePop})`,
           zIndex: 20,
           padding: '10px 20px',
-        }}      {/* BABAK 5: TRUK MUATAN BERAT & CLOSE-UP BAN (ZOOM-IN) */}
-        {activeIndex === 4 && (() => {
-          // Progress animasi Babak 5 (0 sampai 240 frame)
-          const b5Progress = frame - 1260;
+        }}
+      >
+        <div
+          style={{
+            fontSize: 32,
+            fontWeight: 900,
+            lineHeight: 1.35,
+            color: '#ffffff',
+            textShadow: '0 4px 16px rgba(0,0,0,1), 0 2px 4px rgba(0,0,0,0.9)',
+            letterSpacing: 0.5,
+          }}
+        >
+          {currentScene.scriptPrefix}
+          <span
+            style={{
+              color: '#facc15',
+              backgroundColor: 'rgba(234, 179, 8, 0.15)',
+              padding: '2px 8px',
+              borderRadius: 8,
+              border: '1px solid rgba(250, 204, 21, 0.4)',
+              boxShadow: '0 0 18px rgba(250, 204, 21, 0.35)',
+              display: 'inline-block',
+              marginLeft: 6,
+            }}
+          >
+            {currentScene.highlight}
+          </span>
+        </div>
+      </div>
 
-          // Animasi Kamera Zoom-In: Dari Truk Penuh (Skala 1) ke Roda Belakang (Skala 2.8)
-          const cameraZoom = interpolate(b5Progress, [0, 80, 150], [1, 1, 2.7], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          });
-          const cameraPanX = interpolate(b5Progress, [0, 80, 150], [0, 0, -210], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          });
-          const cameraPanY = interpolate(b5Progress, [0, 80, 150], [0, 0, -110], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          });
+      {/* PROGRESS BAR */}
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 10,
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            width: '85%',
+            height: 8,
+            backgroundColor: 'rgba(255, 255, 255, 0.12)',
+            borderRadius: 6,
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              width: `${(frame / 1500) * 100}%`,
+              height: '100%',
+              backgroundColor:
+                activeIndex === 0
+                  ? '#0d9488'
+                  : activeIndex === 1
+                  ? '#eab308'
+                  : activeIndex === 2
+                  ? '#38bdf8'
+                  : activeIndex === 3
+                  ? '#ef4444'
+                  : '#10b981',
+            }}
+          />
+        </div>
+        <div
+          style={{
+            fontSize: 16,
+            color: '#64748b',
+            fontFamily: 'monospace',
+            letterSpacing: 2,
+          }}
+        >
+          PROSES PEMBUATAN BAN MOBIL • {Math.floor(frame / fps)}s / 50s
+        </div>
+      </div>
+    </div>
+  );
+};
 
-          // Indikator Beban yang Naik
-          const truckWeight = Math.round(
-            interpolate(b5Progress, [10, 140], [4500, 32000], {
-              extrapolateLeft: 'clamp',
-              extrapolateRight: 'clamp',
-            })
-          );
-
-          return (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              {/* Kanvas Kamera Ber-Zoom */}
-              <div
-                style={{
-                  width: 500,
-                  height: 480,
-                  backgroundColor: '#0c1322',
-                  borderRadius: 28,
-                  border: '3px solid #1e293b',
-                  boxShadow: '0 25px 60px rgba(0,0,0,0.95)',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                {/* Objek Dunia yang Di-Zoom & Di-Pan */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    width: 480,
-                    height: 440,
-                    transform: `scale(${cameraZoom}) translate(${cameraPanX}px, ${cameraPanY}px)`,
-                    transformOrigin: 'center center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {/* MODEL MOBIL TRUK LOGISTIK */}
-                  <div style={{ position: 'relative', width: 440, height: 240, display: 'flex', alignItems: 'flex-end' }}>
-                    {/* 1. Kontainer Muatan Berat */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: 10,
-                        bottom: 60,
-                        width: 270,
-                        height: 150,
-                        backgroundColor: '#1e3a5f',
-                        borderRadius: '12px 6px 6px 6px',
-                        border: '3px solid #38bdf8',
-                        boxShadow: '0 10px 25px rgba(0,0,0,0.7)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        padding: 10,
-                      }}
-                    >
-                      {/* Tulisan Muatan Kontainer */}
-                      <span style={{ fontSize: 13, fontWeight: 900, color: '#93c5fd', letterSpacing: 2 }}>
-                        HEAVY CARGO
-                      </span>
-                      <div
-                        style={{
-                          marginTop: 8,
-                          backgroundColor: '#0f172a',
-                          padding: '4px 12px',
-                          borderRadius: 6,
-                          border: '1.5px solid #facc15',
-                          fontSize: 16,
-                          fontWeight: 900,
-                          color: '#facc15',
-                          fontFamily: 'monospace',
-                        }}
-                      >
-                        {truckWeight} KG
-                      </div>
-                    </div>
-
-                    {/* 2. Kepala Kabin Truk */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        right: 25,
-                        bottom: 60,
-                        width: 125,
-                        height: 140,
-                        backgroundColor: '#dc2626',
-                        borderRadius: '18px 24px 6px 6px',
-                        border: '3px solid #f87171',
-                        boxShadow: '0 10px 25px rgba(0,0,0,0.6)',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      {/* Kaca Depan Kabin */}
-                      <div
-                        style={{
-                          width: 85,
-                          height: 50,
-                          backgroundColor: '#38bdf8',
-                          margin: '12px 0 0 10px',
-                          borderRadius: '8px 16px 4px 4px',
-                          border: '2px solid #bae6fd',
-                          opacity: 0.85,
-                        }}
-                      />
-                      {/* Lampu Depan Truk */}
-                      <div
-                        style={{
-                          position: 'absolute',
-                          bottom: 15,
-                          right: 8,
-                          width: 14,
-                          height: 18,
-                          backgroundColor: '#facc15',
-                          borderRadius: 4,
-                          boxShadow: '0 0 12px #facc15',
-                        }}
-                      />
-                    </div>
-
-                    {/* Sasis Rangka Baja Truk */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: 10,
-                        bottom: 48,
-                        width: 410,
-                        height: 16,
-                        backgroundColor: '#334155',
-                        borderRadius: 4,
-                      }}
-                    />
-
-                    {/* 3. TIGA PASANG RODA TRUK (Fokus Close-up ke Roda Belakang Kiri) */}
-                    {/* Roda Belakang 1 (Target Kamera Zoom) */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: 35,
-                        bottom: 8,
-                        width: 75,
-                        height: 75,
-                        borderRadius: '50%',
-                        backgroundColor: '#09090b',
-                        border: '7px solid #27272a',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: b5Progress > 90 ? '0 0 25px #10b981' : '0 6px 15px rgba(0,0,0,0.9)',
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: '50%',
-                          backgroundColor: '#0f172a',
-                          border: '3px solid #cbd5e1',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#10b981' }} />
-                      </div>
-                    </div>
-
-                    {/* Roda Belakang 2 */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: 130,
-                        bottom: 8,
-                        width: 75,
-                        height: 75,
-                        borderRadius: '50%',
-                        backgroundColor: '#09090b',
-                        border: '7px solid #27272a',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 6px 15px rgba(0,0,0,0.9)',
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: '50%',
-                          backgroundColor: '#0f172a',
-                          border: '3px solid #cbd5e1',
-                        }}
-                      />
-        {/* BABAK 5: TRUK MUATAN BERAT & CLOSE-UP BAN (ZOOM-IN) */}
-        {activeIndex === 4 && (() => {
-          // Progress animasi Babak 5 (0 sampai 240 frame)
-          const b5Progress = frame - 1260;
-
-          // Animasi Kamera Zoom-In: Dari Truk Penuh (Skala 1) ke Roda Belakang (Skala 2.8)
-          const cameraZoom = interpolate(b5Progress, [0, 80, 150], [1, 1, 2.7], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          });
-          const cameraPanX = interpolate(b5Progress, [0, 80, 150], [0, 0, -210], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          });
-          const cameraPanY = interpolate(b5Progress, [0, 80, 150], [0, 0, -110], {
-            extrapolateLeft: 'clamp',
-            extrapolateRight: 'clamp',
-          });
-
-          // Indikator Beban yang Naik
-          const truckWeight = Math.round(
-            interpolate(b5Progress, [10, 140], [4500, 32000], {
-              extrapolateLeft: 'clamp',
-              extrapolateRight: 'clamp',
-            })
-          );
-
-          return (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              {/* Kanvas Kamera Ber-Zoom */}
-              <div
-                style={{
-                  width: 500,
-                  height: 480,
-                  backgroundColor: '#0c1322',
-                  borderRadius: 28,
-                  border: '3px solid #1e293b',
-                  boxShadow: '0 25px 60px rgba(0,0,0,0.95)',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                {/* Objek Dunia yang Di-Zoom & Di-Pan */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    width: 480,
-                    height: 440,
-                    transform: `scale(${cameraZoom}) translate(${cameraPanX}px, ${cameraPanY}px)`,
-                    transformOrigin: 'center center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {/* MODEL MOBIL TRUK LOGISTIK */}
-                  <div style={{ position: 'relative', width: 440, height: 240, display: 'flex', alignItems: 'flex-end' }}>
-                    {/* 1. Kontainer Muatan Berat */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: 10,
-                        bottom: 60,
-                        width: 270,
-                        height: 150,
-                        backgroundColor: '#1e3a5f',
-                        borderRadius: '12px 6px 6px 6px',
-                        border: '3px solid #38bdf8',
-                        boxShadow: '0 10px 25px rgba(0,0,0,0.7)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        padding: 10,
-                      }}
-                    >
-                      {/* Tulisan Muatan Kontainer */}
-                      <span style={{ fontSize: 13, fontWeight: 900, color: '#93c5fd', letterSpacing: 2 }}>
-                        HEAVY CARGO
-                      </span>
-                      <div
-                        style={{
-                          marginTop: 8,
-                          backgroundColor: '#0f172a',
-                          padding: '4px 12px',
-                          borderRadius: 6,
-                          border: '1.5px solid #facc15',
-                          fontSize: 16,
-                          fontWeight: 900,
-                          color: '#facc15',
-                          fontFamily: 'monospace',
-                        }}
-                      >
-                        {truckWeight} KG
-                      </div>
-                    </div>
-
-                    {/* 2. Kepala Kabin Truk */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        right: 25,
-                        bottom: 60,
-                        width: 125,
-                        height: 140,
-                        backgroundColor: '#dc2626',
-                        borderRadius: '18px 24px 6px 6px',
-                        border: '3px solid #f87171',
-                        boxShadow: '0 10px 25px rgba(0,0,0,0.6)',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      {/* Kaca Depan Kabin */}
-                      <div
-                        style={{
-                          width: 85,
-                          height: 50,
-                          backgroundColor: '#38bdf8',
-                          margin: '12px 0 0 10px',
-                          borderRadius: '8px 16px 4px 4px',
-                          border: '2px solid #bae6fd',
-                          opacity: 0.85,
-                        }}
-                      />
-                      {/* Lampu Depan Truk */}
-                      <div
-                        style={{
-                          position: 'absolute',
-                          bottom: 15,
-                          right: 8,
-                          width: 14,
-                          height: 18,
-                          backgroundColor: '#facc15',
-                          borderRadius: 4,
-                          boxShadow: '0 0 12px #facc15',
-                        }}
-                      />
-                    </div>
-
-                    {/* Sasis Rangka Baja Truk */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: 10,
-                        bottom: 48,
-                        width: 410,
-                        height: 16,
-                        backgroundColor: '#334155',
-                        borderRadius: 4,
-                      }}
-                    />
-
-                    {/* 3. TIGA PASANG RODA TRUK (Fokus Close-up ke Roda Belakang Kiri) */}
-                    {/* Roda Belakang 1 (Target Kamera Zoom) */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: 35,
-                        bottom: 8,
-                        width: 75,
-                        height: 75,
-                        borderRadius: '50%',
-                        backgroundColor: '#09090b',
-                        border: '7px solid #27272a',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: b5Progress > 90 ? '0 0 25px #10b981' : '0 6px 15px rgba(0,0,0,0.9)',
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: '50%',
-                          backgroundColor: '#0f172a',
-                          border: '3px solid #cbd5e1',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#10b981' }} />
-                      </div>
-                    </div>
-
-                    {/* Roda Belakang 2 */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: 130,
-                        bottom: 8,
-                        width: 75,
-                        height: 75,
-                        borderRadius: '50%',
-                        backgroundColor: '#09090b',
-                        border: '7px solid #27272a',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 6px 15px rgba(0,0,0,0.9)',
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: '50%',
-                          backgroundColor: '#0f172a',
-                          border: '3px solid #cbd5e1',
-                        }}
-                      />
-                    </div>
-
-                    {/* Roda Depan */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        right: 45,
-                        bottom: 8,
-                        width: 75,
-                        height: 75,
-                        borderRadius: '50%',
-                        backgroundColor: '#09090b',
-                        border: '7px solid #27272a',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 6px 15px rgba(0,0,0,0.9)',
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: '50%',
-                          backgroundColor: '#0f172a',
-                          border: '3px solid #cbd5e1',
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Aspal Jalanan */}
-                  <div
-                    style={{
-                      width: 460,
-                      height: 14,
-                      backgroundColor: '#334155',
-                      borderRadius: 6,
-                      boxShadow: '0 4px 15px rgba(0,0,0,0.8)',
-                    }}
-                  />
-                </div>
-
-                {/* HUD Indikator Close-up Ban (Muncul saat Kamera Selesai Zoom) */}
-                {b5Progress > 95 && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 20,
-                      backgroundColor: 'rgba(2, 6, 23, 0.92)',
-                      padding: '8px 20px',
-                      borderRadius: 20,
-                      border: '1.5px solid #10b981',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      boxShadow: '0 0 20px rgba(16, 185, 129, 0.4)',
-                    }}
-                  >
-                    <span style={{ fontSize: 13, fontWeight: 900, color: '#94a3b8', letterSpacing: 1 }}>
-                      TARGET CLOSE-UP: RODA TRUK
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 18,
-                        fontWeight: 900,
-                        color: '#10b981',
-                        fontFamily: 'monospace',
-                        marginTop: 2,
-                      }}
-                    >
-                      BEBAN TERTAHAN: 8.000 KG / BAN
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Label Deskripsi di Bawah */}
-              <div
-                style={{
-                  marginTop: 22,
-                  fontSize: 22,
-                  color: '#10b981',
-                  fontWeight: 700,
-                  letterSpacing: 1.5,
-                }}
-              >
-                {b5Progress < 95 ? 'TRUK MUATAN 32 TON MELAJU' : 'BAN KARET BAJA MENAHAN TEKANAN EKSTREM'}
-              </div>
-            </div>
-          );
-        })()}
