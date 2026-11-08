@@ -111,15 +111,7 @@ export const ExplainerStyle: React.FC = () => {
 
   // Animasi Babak 5 (Truk & Close-up Zoom Presisi Roda Tengah)
   const b5Progress = Math.max(0, frame - 1260);
-  const cameraZoom = interpolate(b5Progress, [0, 70, 140], [1, 1, 3.0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  const cameraPanX = interpolate(b5Progress, [0, 70, 140], [0, 0, 130], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-  const cameraPanY = interpolate(b5Progress, [0, 70, 140], [0, 0, 60], {
+  const cameraZoom = interpolate(b5Progress, [0, 70, 140], [1, 1, 3.2], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -898,14 +890,14 @@ export const ExplainerStyle: React.FC = () => {
                 alignItems: 'center',
               }}
             >
-              {/* Kanvas Zoom & Pan - Target Pas di Roda Belakang */}
+              {/* Kanvas Zoom Mengunci Langsung ke Roda Belakang */}
               <div
                 style={{
                   position: 'absolute',
-                  width: 480,
-                  height: 440,
-                  transform: `scale(${cameraZoom}) translate(${cameraPanX}px, ${cameraPanY}px)`,
-                  transformOrigin: 'center center',
+                  width: 440,
+                  height: 260,
+                  transform: `scale(${cameraZoom})`,
+                  transformOrigin: '75px 200px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
@@ -1006,7 +998,7 @@ export const ExplainerStyle: React.FC = () => {
                     }}
                   />
 
-                  {/* Roda Belakang 1 (Target Kamera Zoom Utama) */}
+                  {/* Roda Belakang 1 (Titik Pusat Zoom Kamera) */}
                   <div
                     style={{
                       position: 'absolute',
