@@ -13,6 +13,7 @@ export const ExplainerStyle: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
+  // Konfigurasi 4 Babak (Frame 0 - 1260)
   const scenes = [
     {
       start: 0,
@@ -37,6 +38,14 @@ export const ExplainerStyle: React.FC = () => {
       subtitle: 'STEEL BELT INNER CORE',
       scriptPrefix: 'Rahasia kekuatannya: anyaman kawat baja dipasang menyilang agar ',
       highlight: 'BAN TIDAK PECAH!',
+    },
+    {
+      start: 1020,
+      duration: 240,
+      badge: '4 • CETAKAN HIDROLIK',
+      subtitle: 'CURING & TREAD MOLDING',
+      scriptPrefix: 'Ban mentah dipanaskan mesin pres hidrolik untuk mencetak ',
+      highlight: 'ALUR TAPAK ANTI-SLIP!',
     },
   ];
 
@@ -83,6 +92,16 @@ export const ExplainerStyle: React.FC = () => {
     })
   );
 
+  // Animasi Babak 4: Gerakan Menjepit Mesin Pres Hidrolik
+  const moldPressY = interpolate(frame, [1030, 1130], [80, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const moldGlow = interpolate(frame, [1080, 1150], [0.3, 0.85], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
   return (
     <div
       style={{
@@ -108,6 +127,9 @@ export const ExplainerStyle: React.FC = () => {
       <Sequence from={595} durationInFrames={35}>
         <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
       </Sequence>
+      <Sequence from={1015} durationInFrames={35}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+      </Sequence>
 
       {/* BACKGROUND GRID */}
       <div
@@ -125,8 +147,22 @@ export const ExplainerStyle: React.FC = () => {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, zIndex: 10 }}>
         <div
           style={{
-            backgroundColor: activeIndex === 0 ? '#0d9488' : activeIndex === 1 ? '#eab308' : '#38bdf8',
-            color: activeIndex === 0 ? '#f0fdfa' : activeIndex === 1 ? '#422006' : '#082f49',
+            backgroundColor:
+              activeIndex === 0
+                ? '#0d9488'
+                : activeIndex === 1
+                ? '#eab308'
+                : activeIndex === 2
+                ? '#38bdf8'
+                : '#ef4444',
+            color:
+              activeIndex === 0
+                ? '#f0fdfa'
+                : activeIndex === 1
+                ? '#422006'
+                : activeIndex === 2
+                ? '#082f49'
+                : '#fef2f2',
             padding: '14px 40px',
             borderRadius: 50,
             fontSize: 36,
@@ -134,11 +170,9 @@ export const ExplainerStyle: React.FC = () => {
             letterSpacing: 1.5,
             transform: `scale(${badgeScale})`,
             boxShadow:
-              activeIndex === 0
-                ? '0 10px 30px rgba(13, 148, 136, 0.45)'
-                : activeIndex === 1
-                ? '0 10px 30px rgba(234, 179, 8, 0.45)'
-                : '0 10px 30px rgba(56, 189, 248, 0.45)',
+              activeIndex === 3
+                ? '0 10px 30px rgba(239, 68, 68, 0.45)'
+                : '0 10px 30px rgba(0,0,0,0.5)',
             textTransform: 'uppercase',
           }}
         >
@@ -468,8 +502,8 @@ export const ExplainerStyle: React.FC = () => {
             </div>
           </div>
         )}
-        
-        {/* BABAK 3: PENAMPANG LAPISAN KAWAT BAJA (CROSS-SECTION) */}
+
+                {/* BABAK 3: PENAMPANG LAPISAN KAWAT BAJA */}
         {activeIndex === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -509,7 +543,6 @@ export const ExplainerStyle: React.FC = () => {
                   justifyContent: 'center',
                 }}
               >
-                {/* 1. KARET TAPAK LUAR */}
                 <div
                   style={{
                     width: 340,
@@ -552,7 +585,6 @@ export const ExplainerStyle: React.FC = () => {
                   </span>
                 </div>
 
-                {/* 2. LAPISAN ANYAMAN KAWAT BAJA */}
                 <div
                   style={{
                     width: 310,
@@ -612,7 +644,6 @@ export const ExplainerStyle: React.FC = () => {
                   </div>
                 </div>
 
-                {/* 3. LAPISAN DASAR RANGKA KARET */}
                 <div
                   style={{
                     width: 340,
@@ -668,6 +699,112 @@ export const ExplainerStyle: React.FC = () => {
               }}
             >
               KAWAT BAJA DITANAM DI ANTARA LAPISAN KARET
+            </div>
+          </div>
+        )}
+
+        {/* BABAK 4: MESIN PRES HIDROLIK & CETAKAN ALUR TAPAK */}
+        {activeIndex === 3 && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div
+              style={{
+                width: 480,
+                height: 480,
+                backgroundColor: '#0c1322',
+                borderRadius: 28,
+                border: '3px solid #1e293b',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.95)',
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                padding: '24px 20px',
+                overflow: 'hidden',
+              }}
+            >
+              {/* Cetakan Atas Turun Menjepit */}
+              <div
+                style={{
+                  width: '100%',
+                  height: 90,
+                  background: 'linear-gradient(180deg, #991b1b 0%, #dc2626 100%)',
+                  borderRadius: 16,
+                  border: '3px solid #ef4444',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transform: `translateY(${moldPressY}px)`,
+                  boxShadow: `0 10px 30px rgba(239, 68, 68, ${moldGlow})`,
+                  zIndex: 5,
+                }}
+              >
+                <span style={{ fontSize: 18, fontWeight: 900, color: '#ffffff', letterSpacing: 1 }}>
+                  CETAKAN ATAS • SUHU 200°C
+                </span>
+              </div>
+
+              {/* Balok Tapak Ban Bergerigi yang Dicetak */}
+              <div
+                style={{
+                  width: '100%',
+                  height: 160,
+                  backgroundColor: '#18181b',
+                  borderRadius: 18,
+                  border: '4px solid #3f3f46',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-around',
+                  padding: '0 14px',
+                  boxShadow: 'inset 0 0 25px rgba(0,0,0,0.9)',
+                }}
+              >
+                {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+                  <div
+                    key={`mold-groove-${i}`}
+                    style={{
+                      width: 28,
+                      height: 110,
+                      backgroundColor: '#09090b',
+                      borderRadius: 6,
+                      border: '2px solid #52525b',
+                      boxShadow: 'inset 0 0 8px rgba(0,0,0,0.9)',
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Cetakan Bawah Naik Menjepit */}
+              <div
+                style={{
+                  width: '100%',
+                  height: 90,
+                  background: 'linear-gradient(0deg, #991b1b 0%, #dc2626 100%)',
+                  borderRadius: 16,
+                  border: '3px solid #ef4444',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transform: `translateY(${-moldPressY}px)`,
+                  boxShadow: `0 -10px 30px rgba(239, 68, 68, ${moldGlow})`,
+                  zIndex: 5,
+                }}
+              >
+                <span style={{ fontSize: 18, fontWeight: 900, color: '#ffffff', letterSpacing: 1 }}>
+                  CETAKAN BAWAH • HIDROLIK TEKAN
+                </span>
+              </div>
+            </div>
+
+            <div
+              style={{
+                marginTop: 22,
+                fontSize: 22,
+                color: '#ef4444',
+                fontWeight: 700,
+                letterSpacing: 1.5,
+              }}
+            >
+              POLA ALUR PEMBUANG AIR DICETAK DI SUHU 200°C
             </div>
           </div>
         )}
@@ -739,7 +876,13 @@ export const ExplainerStyle: React.FC = () => {
               width: `${(frame / 1500) * 100}%`,
               height: '100%',
               backgroundColor:
-                activeIndex === 0 ? '#0d9488' : activeIndex === 1 ? '#eab308' : '#38bdf8',
+                activeIndex === 0
+                  ? '#0d9488'
+                  : activeIndex === 1
+                  ? '#eab308'
+                  : activeIndex === 2
+                  ? '#38bdf8'
+                  : '#ef4444',
             }}
           />
         </div>
