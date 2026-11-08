@@ -13,7 +13,7 @@ export const ExplainerStyle: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Konfigurasi 4 Babak (Frame 0 - 1260)
+  // Konfigurasi 5 Babak Lengkap (Total 1500 frame = 50 detik)
   const scenes = [
     {
       start: 0,
@@ -47,6 +47,14 @@ export const ExplainerStyle: React.FC = () => {
       scriptPrefix: 'Ban mentah dipanaskan mesin pres hidrolik untuk mencetak ',
       highlight: 'ALUR TAPAK ANTI-SLIP!',
     },
+    {
+      start: 1260,
+      duration: 240,
+      badge: '5 • TAHAN BEBAN BERTON-TON',
+      subtitle: 'RODA MOBIL SIAP MELAJU',
+      scriptPrefix: 'Hasilnya, roda karet elastis ini siap menopang mobilmu ',
+      highlight: 'MELAJU DENGAN AMAN!',
+    },
   ];
 
   const currentSceneIndex = scenes.findIndex(
@@ -68,7 +76,7 @@ export const ExplainerStyle: React.FC = () => {
     config: { damping: 14, mass: 0.6, stiffness: 140 },
   });
 
-  // Animasi Babak 1
+  // Babak 1
   const dropCycle = frame % 30;
   const dropY = interpolate(dropCycle, [0, 24], [0, 110], {
     extrapolateLeft: 'clamp',
@@ -80,7 +88,7 @@ export const ExplainerStyle: React.FC = () => {
     extrapolateRight: 'clamp',
   });
 
-  // Animasi Babak 2
+  // Babak 2
   const rubberColorProgress = interpolate(frame, [270, 480], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -92,7 +100,7 @@ export const ExplainerStyle: React.FC = () => {
     })
   );
 
-  // Animasi Babak 4: Gerakan Menjepit Mesin Pres Hidrolik
+  // Babak 4
   const moldPressY = interpolate(frame, [1030, 1130], [80, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -101,6 +109,15 @@ export const ExplainerStyle: React.FC = () => {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
+
+  // Babak 5: Beban Tekan & Efek Pegas Ban
+  const loadWeight = Math.round(
+    interpolate(frame, [1270, 1440], [500, 3200], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    })
+  );
+  const tireSquish = interpolate(loadWeight, [500, 3200], [0, 16]);
 
   return (
     <div
@@ -130,6 +147,9 @@ export const ExplainerStyle: React.FC = () => {
       <Sequence from={1015} durationInFrames={35}>
         <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
       </Sequence>
+      <Sequence from={1255} durationInFrames={35}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+      </Sequence>
 
       {/* BACKGROUND GRID */}
       <div
@@ -154,7 +174,9 @@ export const ExplainerStyle: React.FC = () => {
                 ? '#eab308'
                 : activeIndex === 2
                 ? '#38bdf8'
-                : '#ef4444',
+                : activeIndex === 3
+                ? '#ef4444'
+                : '#10b981',
             color:
               activeIndex === 0
                 ? '#f0fdfa'
@@ -162,7 +184,9 @@ export const ExplainerStyle: React.FC = () => {
                 ? '#422006'
                 : activeIndex === 2
                 ? '#082f49'
-                : '#fef2f2',
+                : activeIndex === 3
+                ? '#fef2f2'
+                : '#022c22',
             padding: '14px 40px',
             borderRadius: 50,
             fontSize: 36,
@@ -170,8 +194,8 @@ export const ExplainerStyle: React.FC = () => {
             letterSpacing: 1.5,
             transform: `scale(${badgeScale})`,
             boxShadow:
-              activeIndex === 3
-                ? '0 10px 30px rgba(239, 68, 68, 0.45)'
+              activeIndex === 4
+                ? '0 10px 30px rgba(16, 185, 129, 0.45)'
                 : '0 10px 30px rgba(0,0,0,0.5)',
             textTransform: 'uppercase',
           }}
@@ -703,7 +727,7 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* BABAK 4: MESIN PRES HIDROLIK & CETAKAN ALUR TAPAK */}
+        {/* BABAK 4: MESIN PRES HIDROLIK */}
         {activeIndex === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -722,7 +746,6 @@ export const ExplainerStyle: React.FC = () => {
                 overflow: 'hidden',
               }}
             >
-              {/* Cetakan Atas Turun Menjepit */}
               <div
                 style={{
                   width: '100%',
@@ -743,7 +766,6 @@ export const ExplainerStyle: React.FC = () => {
                 </span>
               </div>
 
-              {/* Balok Tapak Ban Bergerigi yang Dicetak */}
               <div
                 style={{
                   width: '100%',
@@ -773,7 +795,6 @@ export const ExplainerStyle: React.FC = () => {
                 ))}
               </div>
 
-              {/* Cetakan Bawah Naik Menjepit */}
               <div
                 style={{
                   width: '100%',
@@ -805,6 +826,155 @@ export const ExplainerStyle: React.FC = () => {
               }}
             >
               POLA ALUR PEMBUANG AIR DICETAK DI SUHU 200°C
+            </div>
+          </div>
+        )}
+
+                {/* BABAK 5: RODA MOBIL UTUH & UJI TEKANAN BEBAN */}
+        {activeIndex === 4 && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Balok Mesin Penekan Beban dari Atas */}
+            <div
+              style={{
+                width: 280,
+                height: 38,
+                backgroundColor: '#334155',
+                borderRadius: 10,
+                border: '2px solid #64748b',
+                marginBottom: 8,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 16,
+                fontWeight: 900,
+                color: '#f8fafc',
+                letterSpacing: 1,
+                boxShadow: '0 6px 16px rgba(0,0,0,0.6)',
+              }}
+            >
+              ▼ BEBAN TEKAN KENDARAAN ▼
+            </div>
+
+            {/* BAN MOBIL UTUH DENGAN VELG RACING BINTANG */}
+            <div
+              style={{
+                width: 460,
+                height: 460,
+                borderRadius: '50%',
+                backgroundColor: '#18181b',
+                border: '34px solid #09090b',
+                position: 'relative',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                boxShadow: '0 30px 60px rgba(0,0,0,0.95)',
+                transform: `scaleY(${1 - tireSquish / 460})`,
+              }}
+            >
+              {/* Gerigi Alur Tapak Luar (12 Alur Presisi) */}
+              {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg) => (
+                <div
+                  key={`tire5-tread-${deg}`}
+                  style={{
+                    position: 'absolute',
+                    top: -16,
+                    width: 14,
+                    height: 22,
+                    backgroundColor: '#27272a',
+                    transform: `rotate(${deg}deg) translateY(-220px)`,
+                    borderRadius: 3,
+                  }}
+                />
+              ))}
+
+              {/* Tulisan Timbul Dinding Samping Ban */}
+              <div
+                style={{
+                  position: 'absolute',
+                  fontSize: 13,
+                  fontWeight: 900,
+                  color: '#52525b',
+                  letterSpacing: 3,
+                  transform: 'translateY(-170px)',
+                }}
+              >
+                RADIAL STEEL 225/55 R18
+              </div>
+
+              {/* VELG RACING PALANG 5 BINTANG */}
+              <div
+                style={{
+                  width: 240,
+                  height: 240,
+                  borderRadius: '50%',
+                  backgroundColor: '#0f172a',
+                  border: '10px solid #cbd5e1',
+                  position: 'relative',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  boxShadow: '0 0 35px rgba(203, 213, 225, 0.45)',
+                }}
+              >
+                {[0, 72, 144, 216, 288].map((rot) => (
+                  <div
+                    key={`velg-spoke-${rot}`}
+                    style={{
+                      position: 'absolute',
+                      width: 18,
+                      height: 100,
+                      background: 'linear-gradient(180deg, #cbd5e1 0%, #475569 100%)',
+                      borderRadius: 8,
+                      transform: `rotate(${rot}deg) translateY(-40px)`,
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.7)',
+                    }}
+                  />
+                ))}
+
+                {/* Hub Tengah Velg */}
+                <div
+                  style={{
+                    width: 65,
+                    height: 65,
+                    borderRadius: '50%',
+                    backgroundColor: '#020617',
+                    border: '5px solid #cbd5e1',
+                    zIndex: 5,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ width: 20, height: 20, borderRadius: '50%', backgroundColor: '#10b981' }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Landasan Aspal Jalanan */}
+            <div
+              style={{
+                width: 500,
+                height: 16,
+                backgroundColor: '#334155',
+                borderRadius: 8,
+                marginTop: 8,
+                boxShadow: '0 6px 20px rgba(0,0,0,0.8)',
+              }}
+            />
+
+            {/* Monitor Daya Tahan Beban Berton-ton */}
+            <div
+              style={{
+                marginTop: 18,
+                fontSize: 34,
+                color: '#10b981',
+                fontWeight: 900,
+                fontFamily: 'monospace',
+                letterSpacing: 2,
+                textShadow: '0 0 16px rgba(16, 185, 129, 0.6)',
+              }}
+            >
+              BEBAN TERTOPANG: {loadWeight} KG
             </div>
           </div>
         )}
@@ -882,7 +1052,9 @@ export const ExplainerStyle: React.FC = () => {
                   ? '#eab308'
                   : activeIndex === 2
                   ? '#38bdf8'
-                  : '#ef4444',
+                  : activeIndex === 3
+                  ? '#ef4444'
+                  : '#10b981',
             }}
           />
         </div>
