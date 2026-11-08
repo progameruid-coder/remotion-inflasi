@@ -75,52 +75,124 @@ export const ExplainerStyle: React.FC = () => {
     config: { damping: 14, mass: 0.6, stiffness: 140 },
   });
 
-  // Animasi Babak 1
+  // ==========================================
+  // 1. LOGIKA ANIMASI BABAK 1 (Frame 0 - 240)
+  // ==========================================
   const dropCycle = frame % 30;
-  const dropY = interpolate(dropCycle, [0, 24], [0, 110], {
+  const dropY = interpolate(dropCycle, [0, 22], [0, 110], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const dropOpacity = interpolate(dropCycle, [0, 5, 22, 25], [0, 1, 1, 0]);
-  const latexLevel = interpolate(frame, [0, 240], [14, 38], {
+  const dropOpacity = interpolate(dropCycle, [0, 4, 21, 24], [0, 1, 1, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const latexLevel = interpolate(frame, [0, 240], [14, 42], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  // Animasi Babak 2
-  const rubberColorProgress = interpolate(frame, [270, 480], [0, 1], {
+  // ==========================================
+  // 2. LOGIKA ANIMASI BABAK 2 (Frame 240 - 600)
+  // ==========================================
+  const powderOpacity = interpolate(frame, [240, 255, 425, 445], [0, 1, 1, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const rubberColorProgress = interpolate(frame, [260, 440], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
   const tensileStrength = Math.round(
-    interpolate(frame, [280, 520], [100, 1000], {
+    interpolate(frame, [260, 515], [100, 1000], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     })
   );
+  const mixerSpeed = frame < 445 ? frame * 5 : 445 * 5 + (frame - 445) * 1.5;
 
-  // Animasi Babak 4
-  const moldPressY = interpolate(frame, [1030, 1130], [80, 0], {
+  // ==========================================
+  // 3. LOGIKA ANIMASI BABAK 3 (Frame 600 - 1020)
+  // ==========================================
+  const b3Progress = Math.max(0, frame - 600);
+  // Lapis 2 (Kawat Baja) turun & mengunci di frame 665 (b3Progress = 65)
+  const steelBeltY = interpolate(b3Progress, [15, 65], [-60, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const moldGlow = interpolate(frame, [1080, 1150], [0.3, 0.85], {
+  const steelBeltOpacity = interpolate(b3Progress, [15, 35], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  // Lapis 1 (Tapak Karet Atas) menghantam turun di frame 735 (b3Progress = 135)
+  const topTreadY = interpolate(b3Progress, [85, 135], [-90, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const topTreadOpacity = interpolate(b3Progress, [85, 105], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  // Badge HUD Anti-Pecah muncul di frame 765 (b3Progress = 165)
+  const b3HudScale = spring({
+    frame: Math.max(0, b3Progress - 165),
+    fps,
+    config: { damping: 12, stiffness: 150 },
+  });
+
+  // ==========================================
+  // 4. LOGIKA ANIMASI BABAK 4 (Frame 1020 - 1260)
+  // ==========================================
+  // Cetakan mulai terbuka (0px), menjepit rapat (52px) di frame 1090, tahan sampai 1180, lalu buka kembali
+  const moldPressY = interpolate(
+    frame,
+    [1020, 1050, 1090, 1180, 1215],
+    [0, 0, 52, 52, 0],
+    {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    }
+  );
+  const moldGlow = interpolate(
+    frame,
+    [1080, 1095, 1180, 1210],
+    [0.2, 0.95, 0.95, 0.3],
+    {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    }
+  );
+  // Alur gerigi tapak ban terbentuk saat dijepit cetakan pada frame 1090 - 1120
+  const treadFormScale = interpolate(frame, [1085, 1120], [0.2, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const treadFormOpacity = interpolate(frame, [1085, 1115], [0.15, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  // Animasi Babak 5 (Truk & Close-up Zoom Presisi Roda Tengah)
+  // ==========================================
+  // 5. LOGIKA ANIMASI BABAK 5 (Frame 1260 - 1500)
+  // ==========================================
   const b5Progress = Math.max(0, frame - 1260);
-  const cameraZoom = interpolate(b5Progress, [0, 70, 140], [1, 1, 3.2], {
+  // Kamera mulai zoom-in di b5Progress = 75 (frame 1335) dan mengunci di b5Progress = 135 (frame 1395)
+  const cameraZoom = interpolate(b5Progress, [0, 75, 135], [1, 1, 3.2], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
   const truckWeight = Math.round(
-    interpolate(b5Progress, [10, 140], [4500, 32000], {
+    interpolate(b5Progress, [10, 135], [4500, 32000], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     })
   );
+  const wheelRotation = b5Progress * 6;
+  const b5HudScale = spring({
+    frame: Math.max(0, b5Progress - 135),
+    fps,
+    config: { damping: 12, stiffness: 150 },
+  });
 
   return (
     <div
@@ -138,59 +210,107 @@ export const ExplainerStyle: React.FC = () => {
         overflow: 'hidden',
       }}
     >
-      {/* 1. BGM UTAMA */}
+      {/* ========================================== */}
+      {/* 1. BGM UTAMA                               */}
+      {/* ========================================== */}
       <Sequence from={0} durationInFrames={1500}>
         <Audio src={staticFile('bgm.mp3')} volume={0.12} />
       </Sequence>
 
-      {/* 2. SFX TRANSISI WHOOSH PER BABAK */}
-      <Sequence from={235} durationInFrames={35}>
+      {/* ========================================== */}
+      {/* 2. SFX TRANSISI ANTAR BABAK (WHOOSH)       */}
+      {/* ========================================== */}
+      <Sequence from={0} durationInFrames={30}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.2} />
+      </Sequence>
+      <Sequence from={236} durationInFrames={30}>
         <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
       </Sequence>
-      <Sequence from={595} durationInFrames={35}>
+      <Sequence from={596} durationInFrames={30}>
         <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
       </Sequence>
-      <Sequence from={1015} durationInFrames={35}>
+      <Sequence from={1016} durationInFrames={30}>
         <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
       </Sequence>
-      <Sequence from={1255} durationInFrames={35}>
+      <Sequence from={1256} durationInFrames={30}>
         <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
       </Sequence>
 
-      {/* 3. SFX AKSI MEKANIS PER BABAK */}
-      <Sequence from={24} durationInFrames={20}>
-        <Audio src={staticFile('water_drop.mp3')} volume={0.25} />
-      </Sequence>
-      <Sequence from={54} durationInFrames={20}>
-        <Audio src={staticFile('water_drop.mp3')} volume={0.25} />
-      </Sequence>
-      <Sequence from={84} durationInFrames={20}>
-        <Audio src={staticFile('water_drop.mp3')} volume={0.25} />
-      </Sequence>
-      <Sequence from={114} durationInFrames={20}>
-        <Audio src={staticFile('water_drop.mp3')} volume={0.25} />
-      </Sequence>
+      {/* ========================================== */}
+      {/* 3. SFX BABAK 1: 8x TETESAN GETAH PENUH     */}
+      {/* ========================================== */}
+      {[0, 1, 2, 3, 4, 5, 6, 7].map((cycle) => (
+        <Sequence key={`drop-sfx-${cycle}`} from={cycle * 30 + 21} durationInFrames={18}>
+          <Audio src={staticFile('water_drop.mp3')} volume={0.3} />
+        </Sequence>
+      ))}
 
-      <Sequence from={250} durationInFrames={70}>
+      {/* ========================================== */}
+      {/* 4. SFX BABAK 2: TUANGAN BUBUK & 1000% LOCK */}
+      {/* ========================================== */}
+      <Sequence from={245} durationInFrames={60}>
         <Audio src={staticFile('pour_powder.mp3')} volume={0.35} />
       </Sequence>
+      <Sequence from={305} durationInFrames={60}>
+        <Audio src={staticFile('pour_powder.mp3')} volume={0.35} />
+      </Sequence>
+      <Sequence from={365} durationInFrames={60}>
+        <Audio src={staticFile('pour_powder.mp3')} volume={0.3} />
+      </Sequence>
+      {/* Bunyi Beep Saat Kekuatan Tarik Mencapai 1000% */}
+      <Sequence from={515} durationInFrames={40}>
+        <Audio src={staticFile('digital_success.mp3')} volume={0.35} />
+      </Sequence>
 
-      <Sequence from={615} durationInFrames={40}>
+      {/* ========================================== */}
+      {/* 5. SFX BABAK 3: TUMPUKAN BAJA & TAPAK      */}
+      {/* ========================================== */}
+      {/* Dentang 1: Kawat Baja Mengunci di Frame 665 */}
+      <Sequence from={663} durationInFrames={30}>
         <Audio src={staticFile('metal_clank.mp3')} volume={0.4} />
       </Sequence>
+      {/* Dentang 2: Lapisan Tapak Karet Menutup di Frame 735 */}
+      <Sequence from={733} durationInFrames={30}>
+        <Audio src={staticFile('metal_clank.mp3')} volume={0.45} />
+      </Sequence>
+      {/* Bunyi Beep Saat Badge Anti-Pecah Muncul di Frame 765 */}
+      <Sequence from={765} durationInFrames={40}>
+        <Audio src={staticFile('digital_success.mp3')} volume={0.35} />
+      </Sequence>
 
-      <Sequence from={1130} durationInFrames={45}>
-        <Audio src={staticFile('hydraulic_press.mp3')} volume={0.55} />
+      {/* ========================================== */}
+      {/* 6. SFX BABAK 4: PRES HIDROLIK & UAP PANAS  */}
+      {/* ========================================== */}
+      {/* Tepat Saat Cetakan Menjepit Rapat di Frame 1090 */}
+      <Sequence from={1088} durationInFrames={45}>
+        <Audio src={staticFile('hydraulic_press.mp3')} volume={0.6} />
       </Sequence>
-      <Sequence from={1135} durationInFrames={65}>
-        <Audio src={staticFile('steam_hiss.mp3')} volume={0.35} />
+      {/* Desisan Uap Saat Ban Dipanggang 200°C (Frame 1100 - 1180) */}
+      <Sequence from={1100} durationInFrames={75}>
+        <Audio src={staticFile('steam_hiss.mp3')} volume={0.4} />
+      </Sequence>
+      {/* Saat Cetakan Membuka & Alur Tapak Selesai di Frame 1185 */}
+      <Sequence from={1185} durationInFrames={30}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.2} />
       </Sequence>
 
-      <Sequence from={1260} durationInFrames={90}>
-        <Audio src={staticFile('truck_engine.mp3')} volume={0.3} />
+      {/* ========================================== */}
+      {/* 7. SFX BABAK 5: TRUK, ZOOM, & KUNCI BEBAN  */}
+      {/* ========================================== */}
+      {/* Deru Mesin Truk disambung agar tidak mati mendadak */}
+      <Sequence from={1260} durationInFrames={120}>
+        <Audio src={staticFile('truck_engine.mp3')} volume={0.32} />
       </Sequence>
-      <Sequence from={1380} durationInFrames={45}>
-        <Audio src={staticFile('digital_success.mp3')} volume={0.4} />
+      <Sequence from={1375} durationInFrames={125}>
+        <Audio src={staticFile('truck_engine.mp3')} volume={0.18} />
+      </Sequence>
+      {/* Whoosh Saat Kamera Melakukan Zoom-In ke Roda di Frame 1335 */}
+      <Sequence from={1335} durationInFrames={35}>
+        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+      </Sequence>
+      {/* Beep Tepat Saat Zoom Mengunci & Badge 8.000 KG Muncul di Frame 1395 */}
+      <Sequence from={1395} durationInFrames={45}>
+        <Audio src={staticFile('digital_success.mp3')} volume={0.45} />
       </Sequence>
 
       {/* BACKGROUND GRID */}
@@ -441,6 +561,7 @@ export const ExplainerStyle: React.FC = () => {
                 </div>
               </div>
 
+              {/* Partikel berhenti menetes setelah adonan matang di frame 440 */}
               {[0, 1, 2, 3].map((i) => (
                 <div
                   key={`sulfur-drop-${i}`}
@@ -453,6 +574,7 @@ export const ExplainerStyle: React.FC = () => {
                     backgroundColor: '#facc15',
                     borderRadius: '50%',
                     boxShadow: '0 0 8px #facc15',
+                    opacity: powderOpacity,
                   }}
                 />
               ))}
@@ -468,6 +590,7 @@ export const ExplainerStyle: React.FC = () => {
                     backgroundColor: '#030712',
                     border: '1.5px solid #6b7280',
                     borderRadius: 3,
+                    opacity: powderOpacity,
                   }}
                 />
               ))}
@@ -504,7 +627,7 @@ export const ExplainerStyle: React.FC = () => {
                     borderRadius: '50%',
                     border: '8px dashed #4b5563',
                     backgroundColor: '#1f2937',
-                    transform: `rotate(${frame * 4}deg)`,
+                    transform: `rotate(${mixerSpeed}deg)`,
                     boxShadow: 'inset 0 0 15px rgba(0,0,0,0.8)',
                   }}
                 />
@@ -518,7 +641,7 @@ export const ExplainerStyle: React.FC = () => {
                     borderRadius: '50%',
                     border: '8px dashed #4b5563',
                     backgroundColor: '#1f2937',
-                    transform: `rotate(${-frame * 4}deg)`,
+                    transform: `rotate(${-mixerSpeed}deg)`,
                     boxShadow: 'inset 0 0 15px rgba(0,0,0,0.8)',
                   }}
                 />
@@ -529,8 +652,11 @@ export const ExplainerStyle: React.FC = () => {
                     height: 140,
                     borderRadius: '45% 55% 50% 50% / 50% 50% 60% 40%',
                     backgroundColor: `rgb(${Math.round(235 - rubberColorProgress * 215)}, ${Math.round(235 - rubberColorProgress * 215)}, ${Math.round(230 - rubberColorProgress * 210)})`,
-                    border: '3px solid rgba(250, 204, 21, 0.4)',
-                    boxShadow: `0 0 25px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,0,0,${0.3 + rubberColorProgress * 0.5})`,
+                    border: tensileStrength === 1000 ? '3px solid #facc15' : '3px solid rgba(250, 204, 21, 0.4)',
+                    boxShadow:
+                      tensileStrength === 1000
+                        ? '0 0 35px rgba(250, 204, 21, 0.5), inset 0 0 20px rgba(0,0,0,0.8)'
+                        : `0 0 25px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,0,0,${0.3 + rubberColorProgress * 0.5})`,
                     transform: `scale(${1 + Math.sin(frame / 4) * 0.05})`,
                     display: 'flex',
                     alignItems: 'center',
@@ -547,7 +673,7 @@ export const ExplainerStyle: React.FC = () => {
                       textTransform: 'uppercase',
                     }}
                   >
-                    {rubberColorProgress > 0.7 ? 'KOMPON KARET' : 'PENGADUKAN'}
+                    {rubberColorProgress > 0.85 ? 'KOMPON KARET' : 'PENGADUKAN'}
                   </span>
                 </div>
               </div>
@@ -558,18 +684,21 @@ export const ExplainerStyle: React.FC = () => {
                 marginTop: 22,
                 fontSize: 32,
                 fontWeight: 900,
-                color: '#facc15',
+                color: tensileStrength === 1000 ? '#10b981' : '#facc15',
                 fontFamily: 'monospace',
                 letterSpacing: 2,
-                textShadow: '0 0 16px rgba(250, 204, 21, 0.5)',
+                textShadow:
+                  tensileStrength === 1000
+                    ? '0 0 20px rgba(16, 185, 129, 0.7)'
+                    : '0 0 16px rgba(250, 204, 21, 0.5)',
               }}
             >
-              KEKUATAN TARIK: {tensileStrength}%
+              KEKUATAN TARIK: {tensileStrength}% {tensileStrength === 1000 ? '✓' : ''}
             </div>
           </div>
         )}
 
-        {/* BABAK 3: PENAMPANG LAPISAN KAWAT BAJA */}
+        {/* BABAK 3: PENAMPANG LAPISAN KAWAT BAJA (ANIMASI BERTAHAP SINKRON SFX) */}
         {activeIndex === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -609,6 +738,7 @@ export const ExplainerStyle: React.FC = () => {
                   justifyContent: 'center',
                 }}
               >
+                {/* 1. LAPISAN ATAS: TAPAK KARET (Turun & Mengunci di Frame 735) */}
                 <div
                   style={{
                     width: 340,
@@ -621,7 +751,8 @@ export const ExplainerStyle: React.FC = () => {
                     justifyContent: 'space-around',
                     boxShadow: '0 10px 25px rgba(0,0,0,0.8)',
                     zIndex: 5,
-                    transform: `translateY(${interpolate(sceneProgress, [0, 80], [-80, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })}px)`,
+                    opacity: topTreadOpacity,
+                    transform: `translateY(${topTreadY}px)`,
                   }}
                 >
                   {[0, 1, 2, 3, 4, 5].map((g) => (
@@ -651,6 +782,7 @@ export const ExplainerStyle: React.FC = () => {
                   </span>
                 </div>
 
+                {/* 2. LAPISAN TENGAH: ANYAMAN KAWAT BAJA (Turun & Mengunci di Frame 665) */}
                 <div
                   style={{
                     width: 310,
@@ -664,8 +796,13 @@ export const ExplainerStyle: React.FC = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 0 30px rgba(56, 189, 248, 0.4)',
+                    boxShadow:
+                      b3Progress >= 65
+                        ? '0 0 30px rgba(56, 189, 248, 0.5)'
+                        : '0 0 10px rgba(56, 189, 248, 0.2)',
                     zIndex: 4,
+                    opacity: steelBeltOpacity,
+                    transform: `translateY(${steelBeltY}px)`,
                   }}
                 >
                   <svg width="310" height="60" style={{ position: 'absolute' }}>
@@ -710,6 +847,7 @@ export const ExplainerStyle: React.FC = () => {
                   </div>
                 </div>
 
+                {/* 3. LAPISAN DASAR: RANGKA KARET DALAM */}
                 <div
                   style={{
                     width: 340,
@@ -737,22 +875,27 @@ export const ExplainerStyle: React.FC = () => {
                 </div>
               </div>
 
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: 18,
-                  padding: '6px 18px',
-                  backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                  border: '1px solid #38bdf8',
-                  borderRadius: 20,
-                  fontSize: 14,
-                  fontWeight: 800,
-                  color: '#38bdf8',
-                  letterSpacing: 1,
-                }}
-              >
-                KETAHANAN STRUKTUR: ANTI-PECAH
-              </div>
+              {/* Badge Muncul Tepat Saat SFX digital_success di Frame 765 */}
+              {b3Progress >= 165 && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: 18,
+                    padding: '6px 18px',
+                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                    border: '1.5px solid #10b981',
+                    borderRadius: 20,
+                    fontSize: 14,
+                    fontWeight: 800,
+                    color: '#10b981',
+                    letterSpacing: 1,
+                    transform: `scale(${b3HudScale})`,
+                    boxShadow: '0 0 20px rgba(16, 185, 129, 0.35)',
+                  }}
+                >
+                  ✓ KETAHANAN STRUKTUR: ANTI-PECAH
+                </div>
+              )}
             </div>
 
             <div
@@ -769,7 +912,7 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* BABAK 4: MESIN PRES HIDROLIK */}
+        {/* BABAK 4: MESIN PRES HIDROLIK (MENJEPIT KE TENGAH SINKRON SFX) */}
         {activeIndex === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -788,10 +931,11 @@ export const ExplainerStyle: React.FC = () => {
                 overflow: 'hidden',
               }}
             >
+              {/* Cetakan Atas Turun Menjepit (+moldPressY) */}
               <div
                 style={{
                   width: '100%',
-                  height: 90,
+                  height: 95,
                   background: 'linear-gradient(180deg, #991b1b 0%, #dc2626 100%)',
                   borderRadius: 16,
                   border: '3px solid #ef4444',
@@ -799,27 +943,31 @@ export const ExplainerStyle: React.FC = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   transform: `translateY(${moldPressY}px)`,
-                  boxShadow: `0 10px 30px rgba(239, 68, 68, ${moldGlow})`,
+                  boxShadow: `0 10px 35px rgba(239, 68, 68, ${moldGlow})`,
                   zIndex: 5,
                 }}
               >
                 <span style={{ fontSize: 18, fontWeight: 900, color: '#ffffff', letterSpacing: 1 }}>
-                  CETAKAN ATAS • SUHU 200°C
+                  ▼ CETAKAN ATAS • SUHU 200°C ▼
                 </span>
               </div>
 
+              {/* Karet Ban yang Dicetak Alurnya */}
               <div
                 style={{
                   width: '100%',
-                  height: 160,
+                  height: 150,
                   backgroundColor: '#18181b',
                   borderRadius: 18,
-                  border: '4px solid #3f3f46',
+                  border: frame >= 1090 ? '4px solid #ef4444' : '4px solid #3f3f46',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-around',
                   padding: '0 14px',
-                  boxShadow: 'inset 0 0 25px rgba(0,0,0,0.9)',
+                  boxShadow:
+                    frame >= 1090 && frame <= 1185
+                      ? '0 0 40px rgba(239, 68, 68, 0.5), inset 0 0 25px rgba(0,0,0,0.9)'
+                      : 'inset 0 0 25px rgba(0,0,0,0.9)',
                 }}
               >
                 {[0, 1, 2, 3, 4, 5, 6].map((i) => (
@@ -827,20 +975,23 @@ export const ExplainerStyle: React.FC = () => {
                     key={`mold-groove-${i}`}
                     style={{
                       width: 28,
-                      height: 110,
+                      height: 105,
                       backgroundColor: '#09090b',
                       borderRadius: 6,
                       border: '2px solid #52525b',
                       boxShadow: 'inset 0 0 8px rgba(0,0,0,0.9)',
+                      opacity: treadFormOpacity,
+                      transform: `scaleY(${treadFormScale})`,
                     }}
                   />
                 ))}
               </div>
 
+              {/* Cetakan Bawah Naik Menjepit (-moldPressY) */}
               <div
                 style={{
                   width: '100%',
-                  height: 90,
+                  height: 95,
                   background: 'linear-gradient(0deg, #991b1b 0%, #dc2626 100%)',
                   borderRadius: 16,
                   border: '3px solid #ef4444',
@@ -848,12 +999,12 @@ export const ExplainerStyle: React.FC = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   transform: `translateY(${-moldPressY}px)`,
-                  boxShadow: `0 -10px 30px rgba(239, 68, 68, ${moldGlow})`,
+                  boxShadow: `0 -10px 35px rgba(239, 68, 68, ${moldGlow})`,
                   zIndex: 5,
                 }}
               >
                 <span style={{ fontSize: 18, fontWeight: 900, color: '#ffffff', letterSpacing: 1 }}>
-                  CETAKAN BAWAH • HIDROLIK TEKAN
+                  ▲ CETAKAN BAWAH • HIDROLIK TEKAN ▲
                 </span>
               </div>
             </div>
@@ -867,7 +1018,11 @@ export const ExplainerStyle: React.FC = () => {
                 letterSpacing: 1.5,
               }}
             >
-              POLA ALUR PEMBUANG AIR DICETAK DI SUHU 200°C
+              {frame < 1090
+                ? 'BAN MENTAH SIAP DIPRES...'
+                : frame < 1185
+                ? '🔥 MENCETAK ALUR BAN DI SUHU 200°C 🔥'
+                : '✓ ALUR TAPAK ANTI-SLIP SELESAI DICETAK'}
             </div>
           </div>
         )}
@@ -998,7 +1153,7 @@ export const ExplainerStyle: React.FC = () => {
                     }}
                   />
 
-                  {/* Roda Belakang 1 (Titik Pusat Zoom Kamera) */}
+                  {/* Roda Belakang 1 (Titik Pusat Zoom Kamera - Berputar Aktif) */}
                   <div
                     style={{
                       position: 'absolute',
@@ -1012,7 +1167,8 @@ export const ExplainerStyle: React.FC = () => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: b5Progress > 90 ? '0 0 35px #10b981' : '0 6px 15px rgba(0,0,0,0.9)',
+                      boxShadow: b5Progress >= 135 ? '0 0 35px #10b981' : '0 6px 15px rgba(0,0,0,0.9)',
+                      transform: `rotate(${wheelRotation}deg)`,
                     }}
                   >
                     {/* Alur Gerigi Tapak Ban Truk */}
@@ -1060,7 +1216,7 @@ export const ExplainerStyle: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Roda Belakang 2 */}
+                  {/* Roda Belakang 2 (Ikut Berputar) */}
                   <div
                     style={{
                       position: 'absolute',
@@ -1075,6 +1231,7 @@ export const ExplainerStyle: React.FC = () => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       boxShadow: '0 6px 15px rgba(0,0,0,0.9)',
+                      transform: `rotate(${wheelRotation}deg)`,
                     }}
                   >
                     <div
@@ -1088,7 +1245,7 @@ export const ExplainerStyle: React.FC = () => {
                     />
                   </div>
 
-                  {/* Roda Depan */}
+                  {/* Roda Depan (Ikut Berputar) */}
                   <div
                     style={{
                       position: 'absolute',
@@ -1103,6 +1260,7 @@ export const ExplainerStyle: React.FC = () => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       boxShadow: '0 6px 15px rgba(0,0,0,0.9)',
+                      transform: `rotate(${wheelRotation}deg)`,
                     }}
                   >
                     <div
@@ -1129,8 +1287,8 @@ export const ExplainerStyle: React.FC = () => {
                 />
               </div>
 
-              {/* HUD Indikator Close-up Ban (Diletakkan di Bawah Roda) */}
-              {b5Progress > 95 && (
+              {/* HUD Indikator Close-up Ban (Muncul Tepat di Frame 1395 Saat Zoom Selesai & Beep Berbunyi) */}
+              {b5Progress >= 135 && (
                 <div
                   style={{
                     position: 'absolute',
@@ -1143,6 +1301,7 @@ export const ExplainerStyle: React.FC = () => {
                     flexDirection: 'column',
                     alignItems: 'center',
                     boxShadow: '0 0 25px rgba(16, 185, 129, 0.45)',
+                    transform: `scale(${b5HudScale})`,
                     zIndex: 20,
                   }}
                 >
@@ -1158,7 +1317,7 @@ export const ExplainerStyle: React.FC = () => {
                       marginTop: 2,
                     }}
                   >
-                    BEBAN TERTOPANG: 8.000 KG / BAN
+                    ✓ BEBAN TERTOPANG: 8.000 KG / BAN
                   </span>
                 </div>
               )}
@@ -1173,7 +1332,7 @@ export const ExplainerStyle: React.FC = () => {
                 letterSpacing: 1.5,
               }}
             >
-              {b5Progress < 95 ? 'TRUK MUATAN 32 TON MELAJU' : 'BAN KARET BAJA MENAHAN TEKANAN EKSTREM'}
+              {b5Progress < 135 ? 'TRUK MUATAN 32 TON MELAJU' : 'BAN KARET BAJA MENAHAN TEKANAN EKSTREM'}
             </div>
           </div>
         )}
