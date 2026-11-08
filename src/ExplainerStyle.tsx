@@ -115,7 +115,6 @@ export const ExplainerStyle: React.FC = () => {
   // 3. LOGIKA ANIMASI BABAK 3 (Frame 600 - 1020)
   // ==========================================
   const b3Progress = Math.max(0, frame - 600);
-  // Lapis 2 (Kawat Baja) turun & mengunci di frame 665 (b3Progress = 65)
   const steelBeltY = interpolate(b3Progress, [15, 65], [-60, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -124,7 +123,6 @@ export const ExplainerStyle: React.FC = () => {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  // Lapis 1 (Tapak Karet Atas) menghantam turun di frame 735 (b3Progress = 135)
   const topTreadY = interpolate(b3Progress, [85, 135], [-90, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -133,7 +131,6 @@ export const ExplainerStyle: React.FC = () => {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  // Badge HUD Anti-Pecah muncul di frame 765 (b3Progress = 165)
   const b3HudScale = spring({
     frame: Math.max(0, b3Progress - 165),
     fps,
@@ -143,7 +140,6 @@ export const ExplainerStyle: React.FC = () => {
   // ==========================================
   // 4. LOGIKA ANIMASI BABAK 4 (Frame 1020 - 1260)
   // ==========================================
-  // Cetakan mulai terbuka (0px), menjepit rapat (52px) di frame 1090, tahan sampai 1180, lalu buka kembali
   const moldPressY = interpolate(
     frame,
     [1020, 1050, 1090, 1180, 1215],
@@ -162,7 +158,6 @@ export const ExplainerStyle: React.FC = () => {
       extrapolateRight: 'clamp',
     }
   );
-  // Alur gerigi tapak ban terbentuk saat dijepit cetakan pada frame 1090 - 1120
   const treadFormScale = interpolate(frame, [1085, 1120], [0.2, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -176,7 +171,6 @@ export const ExplainerStyle: React.FC = () => {
   // 5. LOGIKA ANIMASI BABAK 5 (Frame 1260 - 1500)
   // ==========================================
   const b5Progress = Math.max(0, frame - 1260);
-  // Kamera mulai zoom-in di b5Progress = 75 (frame 1335) dan mengunci di b5Progress = 135 (frame 1395)
   const cameraZoom = interpolate(b5Progress, [0, 75, 135], [1, 1, 3.2], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -211,29 +205,48 @@ export const ExplainerStyle: React.FC = () => {
       }}
     >
       {/* ========================================== */}
-      {/* 1. BGM UTAMA                               */}
+      {/* 0. VOICEOVER NARATOR (UTAMA - VOLUME 1.0)  */}
+      {/* ========================================== */}
+      <Sequence from={5} durationInFrames={235}>
+        <Audio src={staticFile('vo1.mp3')} volume={1.0} />
+      </Sequence>
+      <Sequence from={245} durationInFrames={355}>
+        <Audio src={staticFile('vo2.mp3')} volume={1.0} />
+      </Sequence>
+      <Sequence from={605} durationInFrames={415}>
+        <Audio src={staticFile('vo3.mp3')} volume={1.0} />
+      </Sequence>
+      <Sequence from={1025} durationInFrames={235}>
+        <Audio src={staticFile('vo4.mp3')} volume={1.0} />
+      </Sequence>
+      <Sequence from={1265} durationInFrames={235}>
+        <Audio src={staticFile('vo5.mp3')} volume={1.0} />
+      </Sequence>
+
+      {/* ========================================== */}
+      {/* 1. BGM UTAMA (DUCKING AGAR VO JELAS)       */}
       {/* ========================================== */}
       <Sequence from={0} durationInFrames={1500}>
-        <Audio src={staticFile('bgm.mp3')} volume={0.12} />
+        <Audio src={staticFile('bgm.mp3')} volume={0.08} />
       </Sequence>
 
       {/* ========================================== */}
       {/* 2. SFX TRANSISI ANTAR BABAK (WHOOSH)       */}
       {/* ========================================== */}
       <Sequence from={0} durationInFrames={30}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.2} />
+        <Audio src={staticFile('whoosh.mp3')} volume={0.18} />
       </Sequence>
       <Sequence from={236} durationInFrames={30}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
+        <Audio src={staticFile('whoosh.mp3')} volume={0.2} />
       </Sequence>
       <Sequence from={596} durationInFrames={30}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
+        <Audio src={staticFile('whoosh.mp3')} volume={0.2} />
       </Sequence>
       <Sequence from={1016} durationInFrames={30}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
+        <Audio src={staticFile('whoosh.mp3')} volume={0.2} />
       </Sequence>
       <Sequence from={1256} durationInFrames={30}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
+        <Audio src={staticFile('whoosh.mp3')} volume={0.2} />
       </Sequence>
 
       {/* ========================================== */}
@@ -241,7 +254,7 @@ export const ExplainerStyle: React.FC = () => {
       {/* ========================================== */}
       {[0, 1, 2, 3, 4, 5, 6, 7].map((cycle) => (
         <Sequence key={`drop-sfx-${cycle}`} from={cycle * 30 + 21} durationInFrames={18}>
-          <Audio src={staticFile('water_drop.mp3')} volume={0.3} />
+          <Audio src={staticFile('water_drop.mp3')} volume={0.22} />
         </Sequence>
       ))}
 
@@ -249,68 +262,58 @@ export const ExplainerStyle: React.FC = () => {
       {/* 4. SFX BABAK 2: TUANGAN BUBUK & 1000% LOCK */}
       {/* ========================================== */}
       <Sequence from={245} durationInFrames={60}>
-        <Audio src={staticFile('pour_powder.mp3')} volume={0.35} />
+        <Audio src={staticFile('pour_powder.mp3')} volume={0.25} />
       </Sequence>
       <Sequence from={305} durationInFrames={60}>
-        <Audio src={staticFile('pour_powder.mp3')} volume={0.35} />
+        <Audio src={staticFile('pour_powder.mp3')} volume={0.25} />
       </Sequence>
       <Sequence from={365} durationInFrames={60}>
-        <Audio src={staticFile('pour_powder.mp3')} volume={0.3} />
+        <Audio src={staticFile('pour_powder.mp3')} volume={0.22} />
       </Sequence>
-      {/* Bunyi Beep Saat Kekuatan Tarik Mencapai 1000% */}
       <Sequence from={515} durationInFrames={40}>
-        <Audio src={staticFile('digital_success.mp3')} volume={0.35} />
+        <Audio src={staticFile('digital_success.mp3')} volume={0.3} />
       </Sequence>
 
       {/* ========================================== */}
       {/* 5. SFX BABAK 3: TUMPUKAN BAJA & TAPAK      */}
       {/* ========================================== */}
-      {/* Dentang 1: Kawat Baja Mengunci di Frame 665 */}
       <Sequence from={663} durationInFrames={30}>
-        <Audio src={staticFile('metal_clank.mp3')} volume={0.4} />
+        <Audio src={staticFile('metal_clank.mp3')} volume={0.32} />
       </Sequence>
-      {/* Dentang 2: Lapisan Tapak Karet Menutup di Frame 735 */}
       <Sequence from={733} durationInFrames={30}>
-        <Audio src={staticFile('metal_clank.mp3')} volume={0.45} />
+        <Audio src={staticFile('metal_clank.mp3')} volume={0.35} />
       </Sequence>
-      {/* Bunyi Beep Saat Badge Anti-Pecah Muncul di Frame 765 */}
       <Sequence from={765} durationInFrames={40}>
-        <Audio src={staticFile('digital_success.mp3')} volume={0.35} />
+        <Audio src={staticFile('digital_success.mp3')} volume={0.3} />
       </Sequence>
 
       {/* ========================================== */}
       {/* 6. SFX BABAK 4: PRES HIDROLIK & UAP PANAS  */}
       {/* ========================================== */}
-      {/* Tepat Saat Cetakan Menjepit Rapat di Frame 1090 */}
       <Sequence from={1088} durationInFrames={45}>
-        <Audio src={staticFile('hydraulic_press.mp3')} volume={0.6} />
+        <Audio src={staticFile('hydraulic_press.mp3')} volume={0.45} />
       </Sequence>
-      {/* Desisan Uap Saat Ban Dipanggang 200°C (Frame 1100 - 1180) */}
       <Sequence from={1100} durationInFrames={75}>
-        <Audio src={staticFile('steam_hiss.mp3')} volume={0.4} />
+        <Audio src={staticFile('steam_hiss.mp3')} volume={0.3} />
       </Sequence>
-      {/* Saat Cetakan Membuka & Alur Tapak Selesai di Frame 1185 */}
       <Sequence from={1185} durationInFrames={30}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.2} />
+        <Audio src={staticFile('whoosh.mp3')} volume={0.18} />
       </Sequence>
 
       {/* ========================================== */}
       {/* 7. SFX BABAK 5: TRUK, ZOOM, & KUNCI BEBAN  */}
       {/* ========================================== */}
-      {/* Deru Mesin Truk disambung agar tidak mati mendadak */}
       <Sequence from={1260} durationInFrames={120}>
-        <Audio src={staticFile('truck_engine.mp3')} volume={0.32} />
+        <Audio src={staticFile('truck_engine.mp3')} volume={0.22} />
       </Sequence>
       <Sequence from={1375} durationInFrames={125}>
-        <Audio src={staticFile('truck_engine.mp3')} volume={0.18} />
+        <Audio src={staticFile('truck_engine.mp3')} volume={0.14} />
       </Sequence>
-      {/* Whoosh Saat Kamera Melakukan Zoom-In ke Roda di Frame 1335 */}
       <Sequence from={1335} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+        <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
       </Sequence>
-      {/* Beep Tepat Saat Zoom Mengunci & Badge 8.000 KG Muncul di Frame 1395 */}
       <Sequence from={1395} durationInFrames={45}>
-        <Audio src={staticFile('digital_success.mp3')} volume={0.45} />
+        <Audio src={staticFile('digital_success.mp3')} volume={0.35} />
       </Sequence>
 
       {/* BACKGROUND GRID */}
@@ -561,7 +564,6 @@ export const ExplainerStyle: React.FC = () => {
                 </div>
               </div>
 
-              {/* Partikel berhenti menetes setelah adonan matang di frame 440 */}
               {[0, 1, 2, 3].map((i) => (
                 <div
                   key={`sulfur-drop-${i}`}
@@ -698,7 +700,7 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* BABAK 3: PENAMPANG LAPISAN KAWAT BAJA (ANIMASI BERTAHAP SINKRON SFX) */}
+        {/* BABAK 3: PENAMPANG LAPISAN KAWAT BAJA */}
         {activeIndex === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -738,7 +740,6 @@ export const ExplainerStyle: React.FC = () => {
                   justifyContent: 'center',
                 }}
               >
-                {/* 1. LAPISAN ATAS: TAPAK KARET (Turun & Mengunci di Frame 735) */}
                 <div
                   style={{
                     width: 340,
@@ -782,7 +783,6 @@ export const ExplainerStyle: React.FC = () => {
                   </span>
                 </div>
 
-                {/* 2. LAPISAN TENGAH: ANYAMAN KAWAT BAJA (Turun & Mengunci di Frame 665) */}
                 <div
                   style={{
                     width: 310,
@@ -847,7 +847,6 @@ export const ExplainerStyle: React.FC = () => {
                   </div>
                 </div>
 
-                {/* 3. LAPISAN DASAR: RANGKA KARET DALAM */}
                 <div
                   style={{
                     width: 340,
@@ -875,7 +874,6 @@ export const ExplainerStyle: React.FC = () => {
                 </div>
               </div>
 
-              {/* Badge Muncul Tepat Saat SFX digital_success di Frame 765 */}
               {b3Progress >= 165 && (
                 <div
                   style={{
@@ -912,7 +910,7 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-        {/* BABAK 4: MESIN PRES HIDROLIK (MENJEPIT KE TENGAH SINKRON SFX) */}
+        {/* BABAK 4: MESIN PRES HIDROLIK */}
         {activeIndex === 3 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -931,7 +929,6 @@ export const ExplainerStyle: React.FC = () => {
                 overflow: 'hidden',
               }}
             >
-              {/* Cetakan Atas Turun Menjepit (+moldPressY) */}
               <div
                 style={{
                   width: '100%',
@@ -952,7 +949,6 @@ export const ExplainerStyle: React.FC = () => {
                 </span>
               </div>
 
-              {/* Karet Ban yang Dicetak Alurnya */}
               <div
                 style={{
                   width: '100%',
@@ -987,7 +983,6 @@ export const ExplainerStyle: React.FC = () => {
                 ))}
               </div>
 
-              {/* Cetakan Bawah Naik Menjepit (-moldPressY) */}
               <div
                 style={{
                   width: '100%',
@@ -1045,7 +1040,6 @@ export const ExplainerStyle: React.FC = () => {
                 alignItems: 'center',
               }}
             >
-              {/* Kanvas Zoom Mengunci Langsung ke Roda Belakang */}
               <div
                 style={{
                   position: 'absolute',
@@ -1059,9 +1053,7 @@ export const ExplainerStyle: React.FC = () => {
                   justifyContent: 'center',
                 }}
               >
-                {/* Truk Pengangkut Logistik */}
                 <div style={{ position: 'relative', width: 440, height: 240, display: 'flex', alignItems: 'flex-end' }}>
-                  {/* Kontainer Muatan Berat */}
                   <div
                     style={{
                       position: 'absolute',
@@ -1100,7 +1092,6 @@ export const ExplainerStyle: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Kepala Kabin Truk */}
                   <div
                     style={{
                       position: 'absolute',
@@ -1140,7 +1131,6 @@ export const ExplainerStyle: React.FC = () => {
                     />
                   </div>
 
-                  {/* Sasis Rangka Baja Truk */}
                   <div
                     style={{
                       position: 'absolute',
@@ -1153,7 +1143,6 @@ export const ExplainerStyle: React.FC = () => {
                     }}
                   />
 
-                  {/* Roda Belakang 1 (Titik Pusat Zoom Kamera - Berputar Aktif) */}
                   <div
                     style={{
                       position: 'absolute',
@@ -1171,7 +1160,6 @@ export const ExplainerStyle: React.FC = () => {
                       transform: `rotate(${wheelRotation}deg)`,
                     }}
                   >
-                    {/* Alur Gerigi Tapak Ban Truk */}
                     {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
                       <div
                         key={`b5-tread-${deg}`}
@@ -1185,7 +1173,6 @@ export const ExplainerStyle: React.FC = () => {
                       />
                     ))}
 
-                    {/* Velg Truk Baja Baut Lingkar */}
                     <div
                       style={{
                         width: 44,
@@ -1216,7 +1203,6 @@ export const ExplainerStyle: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Roda Belakang 2 (Ikut Berputar) */}
                   <div
                     style={{
                       position: 'absolute',
@@ -1245,7 +1231,6 @@ export const ExplainerStyle: React.FC = () => {
                     />
                   </div>
 
-                  {/* Roda Depan (Ikut Berputar) */}
                   <div
                     style={{
                       position: 'absolute',
@@ -1275,7 +1260,6 @@ export const ExplainerStyle: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Aspal Jalanan */}
                 <div
                   style={{
                     width: 460,
@@ -1287,7 +1271,6 @@ export const ExplainerStyle: React.FC = () => {
                 />
               </div>
 
-              {/* HUD Indikator Close-up Ban (Muncul Tepat di Frame 1395 Saat Zoom Selesai & Beep Berbunyi) */}
               {b5Progress >= 135 && (
                 <div
                   style={{
