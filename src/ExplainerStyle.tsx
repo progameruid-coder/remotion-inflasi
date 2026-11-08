@@ -109,17 +109,17 @@ export const ExplainerStyle: React.FC = () => {
     extrapolateRight: 'clamp',
   });
 
-  // Animasi Babak 5 (Truk & Close-up Zoom Terpusat)
+  // Animasi Babak 5 (Truk & Close-up Zoom Presisi Roda Tengah)
   const b5Progress = Math.max(0, frame - 1260);
   const cameraZoom = interpolate(b5Progress, [0, 70, 140], [1, 1, 3.0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const cameraPanX = interpolate(b5Progress, [0, 70, 140], [0, 0, 105], {
+  const cameraPanX = interpolate(b5Progress, [0, 70, 140], [0, 0, 130], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const cameraPanY = interpolate(b5Progress, [0, 70, 140], [0, 0, -135], {
+  const cameraPanY = interpolate(b5Progress, [0, 70, 140], [0, 0, 60], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -576,6 +576,7 @@ export const ExplainerStyle: React.FC = () => {
             </div>
           </div>
         )}
+
         {/* BABAK 3: PENAMPANG LAPISAN KAWAT BAJA */}
         {activeIndex === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -878,6 +879,7 @@ export const ExplainerStyle: React.FC = () => {
             </div>
           </div>
         )}
+
         {/* BABAK 5: TRUK MUATAN BERAT & CLOSE-UP BAN PRESISI DI TENGAH */}
         {activeIndex === 4 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -1140,9 +1142,9 @@ export const ExplainerStyle: React.FC = () => {
                 <div
                   style={{
                     position: 'absolute',
-                    bottom: 24,
+                    bottom: 12,
                     backgroundColor: 'rgba(2, 6, 23, 0.94)',
-                    padding: '8px 22px',
+                    padding: '6px 20px',
                     borderRadius: 20,
                     border: '1.5px solid #10b981',
                     display: 'flex',
@@ -1152,12 +1154,12 @@ export const ExplainerStyle: React.FC = () => {
                     zIndex: 20,
                   }}
                 >
-                  <span style={{ fontSize: 13, fontWeight: 900, color: '#94a3b8', letterSpacing: 1 }}>
+                  <span style={{ fontSize: 12, fontWeight: 900, color: '#94a3b8', letterSpacing: 1 }}>
                     STRUKTUR RADIAL KAWAT BAJA
                   </span>
                   <span
                     style={{
-                      fontSize: 18,
+                      fontSize: 17,
                       fontWeight: 900,
                       color: '#10b981',
                       fontFamily: 'monospace',
