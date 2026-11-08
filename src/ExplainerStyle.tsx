@@ -109,17 +109,17 @@ export const ExplainerStyle: React.FC = () => {
     extrapolateRight: 'clamp',
   });
 
-  // Animasi Babak 5 (Truk & Close-up Zoom)
+  // Animasi Babak 5 (Truk & Close-up Zoom Terpusat)
   const b5Progress = Math.max(0, frame - 1260);
-  const cameraZoom = interpolate(b5Progress, [0, 80, 150], [1, 1, 2.7], {
+  const cameraZoom = interpolate(b5Progress, [0, 70, 140], [1, 1, 2.3], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const cameraPanX = interpolate(b5Progress, [0, 80, 150], [0, 0, -210], {
+  const cameraPanX = interpolate(b5Progress, [0, 70, 140], [0, 0, 145], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
-  const cameraPanY = interpolate(b5Progress, [0, 80, 150], [0, 0, -110], {
+  const cameraPanY = interpolate(b5Progress, [0, 70, 140], [0, 0, -65], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -841,7 +841,7 @@ export const ExplainerStyle: React.FC = () => {
           </div>
         )}
 
-                {/* BABAK 5: TRUK MUATAN BERAT & CLOSE-UP BAN */}
+                {/* BABAK 5: TRUK MUATAN BERAT & CLOSE-UP BAN (CENTER FOCUS) */}
         {activeIndex === 4 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -859,7 +859,7 @@ export const ExplainerStyle: React.FC = () => {
                 alignItems: 'center',
               }}
             >
-              {/* Kanvas Zoom & Pan */}
+              {/* Kanvas Zoom & Pan Terpusat */}
               <div
                 style={{
                   position: 'absolute',
@@ -967,36 +967,65 @@ export const ExplainerStyle: React.FC = () => {
                     }}
                   />
 
-                  {/* Roda Belakang 1 (Target Kamera Zoom) */}
+                  {/* Roda Belakang 1 (Target Kamera Zoom Utama) */}
                   <div
                     style={{
                       position: 'absolute',
                       left: 35,
                       bottom: 8,
-                      width: 75,
-                      height: 75,
+                      width: 80,
+                      height: 80,
                       borderRadius: '50%',
-                      backgroundColor: '#09090b',
-                      border: '7px solid #27272a',
+                      backgroundColor: '#18181b',
+                      border: '8px solid #09090b',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: b5Progress > 90 ? '0 0 25px #10b981' : '0 6px 15px rgba(0,0,0,0.9)',
+                      boxShadow: b5Progress > 90 ? '0 0 30px #10b981' : '0 6px 15px rgba(0,0,0,0.9)',
                     }}
                   >
+                    {/* Alur Gerigi Tapak Ban Truk */}
+                    {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+                      <div
+                        key={`b5-tread-${deg}`}
+                        style={{
+                          position: 'absolute',
+                          width: 4,
+                          height: 8,
+                          backgroundColor: '#3f3f46',
+                          transform: `rotate(${deg}deg) translateY(-37px)`,
+                        }}
+                      />
+                    ))}
+
+                    {/* Velg Truk Baja Baut Lingkar */}
                     <div
                       style={{
-                        width: 32,
-                        height: 32,
+                        width: 44,
+                        height: 44,
                         borderRadius: '50%',
                         backgroundColor: '#0f172a',
                         border: '3px solid #cbd5e1',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        position: 'relative',
                       }}
                     >
-                      <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#10b981' }} />
+                      {[0, 60, 120, 180, 240, 300].map((rot) => (
+                        <div
+                          key={`baut-${rot}`}
+                          style={{
+                            position: 'absolute',
+                            width: 4,
+                            height: 4,
+                            borderRadius: '50%',
+                            backgroundColor: '#94a3b8',
+                            transform: `rotate(${rot}deg) translateY(-14px)`,
+                          }}
+                        />
+                      ))}
+                      <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#10b981' }} />
                     </div>
                   </div>
 
@@ -1006,11 +1035,11 @@ export const ExplainerStyle: React.FC = () => {
                       position: 'absolute',
                       left: 130,
                       bottom: 8,
-                      width: 75,
-                      height: 75,
+                      width: 80,
+                      height: 80,
                       borderRadius: '50%',
-                      backgroundColor: '#09090b',
-                      border: '7px solid #27272a',
+                      backgroundColor: '#18181b',
+                      border: '8px solid #09090b',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -1019,8 +1048,8 @@ export const ExplainerStyle: React.FC = () => {
                   >
                     <div
                       style={{
-                        width: 32,
-                        height: 32,
+                        width: 44,
+                        height: 44,
                         borderRadius: '50%',
                         backgroundColor: '#0f172a',
                         border: '3px solid #cbd5e1',
@@ -1034,11 +1063,11 @@ export const ExplainerStyle: React.FC = () => {
                       position: 'absolute',
                       right: 45,
                       bottom: 8,
-                      width: 75,
-                      height: 75,
+                      width: 80,
+                      height: 80,
                       borderRadius: '50%',
-                      backgroundColor: '#09090b',
-                      border: '7px solid #27272a',
+                      backgroundColor: '#18181b',
+                      border: '8px solid #09090b',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -1047,8 +1076,8 @@ export const ExplainerStyle: React.FC = () => {
                   >
                     <div
                       style={{
-                        width: 32,
-                        height: 32,
+                        width: 44,
+                        height: 44,
                         borderRadius: '50%',
                         backgroundColor: '#0f172a',
                         border: '3px solid #cbd5e1',
@@ -1069,24 +1098,25 @@ export const ExplainerStyle: React.FC = () => {
                 />
               </div>
 
-              {/* HUD Indikator Close-up Ban */}
+              {/* HUD Indikator Close-up Ban (Diletakkan di Bawah Roda) */}
               {b5Progress > 95 && (
                 <div
                   style={{
                     position: 'absolute',
-                    top: 20,
-                    backgroundColor: 'rgba(2, 6, 23, 0.92)',
-                    padding: '8px 20px',
+                    bottom: 24,
+                    backgroundColor: 'rgba(2, 6, 23, 0.94)',
+                    padding: '8px 22px',
                     borderRadius: 20,
                     border: '1.5px solid #10b981',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    boxShadow: '0 0 20px rgba(16, 185, 129, 0.4)',
+                    boxShadow: '0 0 25px rgba(16, 185, 129, 0.45)',
+                    zIndex: 20,
                   }}
                 >
                   <span style={{ fontSize: 13, fontWeight: 900, color: '#94a3b8', letterSpacing: 1 }}>
-                    TARGET CLOSE-UP: RODA TRUK
+                    STRUKTUR RADIAL KAWAT BAJA
                   </span>
                   <span
                     style={{
@@ -1097,7 +1127,7 @@ export const ExplainerStyle: React.FC = () => {
                       marginTop: 2,
                     }}
                   >
-                    BEBAN TERTAHAN: 8.000 KG / BAN
+                    BEBAN TERTOPANG: 8.000 KG / BAN
                   </span>
                 </div>
               )}
@@ -1210,4 +1240,3 @@ export const ExplainerStyle: React.FC = () => {
     </div>
   );
 };
-
