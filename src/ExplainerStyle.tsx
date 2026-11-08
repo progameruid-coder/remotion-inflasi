@@ -883,7 +883,7 @@ export const ExplainerStyle: React.FC = () => {
             </div>
           </div>
         )}
-        {/* BABAK 5: TRUK MUATAN BERAT & CLOSE-UP BAN (CENTER FOCUS) */}
+       {/* BABAK 5: TRUK MUATAN BERAT & CLOSE-UP BAN PRESISI DI TENGAH */}
         {activeIndex === 4 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -901,13 +901,22 @@ export const ExplainerStyle: React.FC = () => {
                 alignItems: 'center',
               }}
             >
-              {/* Kanvas Zoom & Pan Terpusat */}
+              {/* Kanvas Zoom & Pan - Target Pas di Roda Belakang */}
               <div
                 style={{
                   position: 'absolute',
                   width: 480,
                   height: 440,
-                  transform: `scale(${cameraZoom}) translate(${cameraPanX}px, ${cameraPanY}px)`,
+                  transform: `scale(${interpolate(b5Progress, [0, 70, 140], [1, 1, 3.0], {
+                    extrapolateLeft: 'clamp',
+                    extrapolateRight: 'clamp',
+                  })}) translate(${interpolate(b5Progress, [0, 70, 140], [0, 0, 105], {
+                    extrapolateLeft: 'clamp',
+                    extrapolateRight: 'clamp',
+                  })}px, ${interpolate(b5Progress, [0, 70, 140], [0, 0, -135], {
+                    extrapolateLeft: 'clamp',
+                    extrapolateRight: 'clamp',
+                  })}px)`,
                   transformOrigin: 'center center',
                   display: 'flex',
                   flexDirection: 'column',
@@ -1023,7 +1032,7 @@ export const ExplainerStyle: React.FC = () => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: b5Progress > 90 ? '0 0 30px #10b981' : '0 6px 15px rgba(0,0,0,0.9)',
+                      boxShadow: b5Progress > 90 ? '0 0 35px #10b981' : '0 6px 15px rgba(0,0,0,0.9)',
                     }}
                   >
                     {/* Alur Gerigi Tapak Ban Truk */}
@@ -1188,97 +1197,3 @@ export const ExplainerStyle: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
-
-      {/* SUBTITLE GAYA KONTEN INFLASI */}
-      <div
-        style={{
-          width: '90%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textAlign: 'center',
-          transform: `scale(${subtitlePop})`,
-          zIndex: 20,
-          padding: '10px 20px',
-        }}
-      >
-        <div
-          style={{
-            fontSize: 32,
-            fontWeight: 900,
-            lineHeight: 1.35,
-            color: '#ffffff',
-            textShadow: '0 4px 16px rgba(0,0,0,1), 0 2px 4px rgba(0,0,0,0.9)',
-            letterSpacing: 0.5,
-          }}
-        >
-          {currentScene.scriptPrefix}
-          <span
-            style={{
-              color: '#facc15',
-              backgroundColor: 'rgba(234, 179, 8, 0.15)',
-              padding: '2px 8px',
-              borderRadius: 8,
-              border: '1px solid rgba(250, 204, 21, 0.4)',
-              boxShadow: '0 0 18px rgba(250, 204, 21, 0.35)',
-              display: 'inline-block',
-              marginLeft: 6,
-            }}
-          >
-            {currentScene.highlight}
-          </span>
-        </div>
-      </div>
-
-      {/* PROGRESS BAR */}
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 10,
-          zIndex: 10,
-        }}
-      >
-        <div
-          style={{
-            width: '85%',
-            height: 8,
-            backgroundColor: 'rgba(255, 255, 255, 0.12)',
-            borderRadius: 6,
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              width: `${(frame / 1500) * 100}%`,
-              height: '100%',
-              backgroundColor:
-                activeIndex === 0
-                  ? '#0d9488'
-                  : activeIndex === 1
-                  ? '#eab308'
-                  : activeIndex === 2
-                  ? '#38bdf8'
-                  : activeIndex === 3
-                  ? '#ef4444'
-                  : '#10b981',
-            }}
-          />
-        </div>
-        <div
-          style={{
-            fontSize: 16,
-            color: '#64748b',
-            fontFamily: 'monospace',
-            letterSpacing: 2,
-          }}
-        >
-          PROSES PEMBUATAN BAN MOBIL • {Math.floor(frame / fps)}s / 50s
-        </div>
-      </div>
-    </div>
-  );
-};
