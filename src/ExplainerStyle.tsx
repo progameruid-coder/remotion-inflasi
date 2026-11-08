@@ -146,20 +146,64 @@ export const ExplainerStyle: React.FC = () => {
         overflow: 'hidden',
       }}
     >
+      {/* 1. BGM UTAMA */}
       <Sequence from={0} durationInFrames={1500}>
         <Audio src={staticFile('bgm.mp3')} volume={0.12} />
       </Sequence>
+
+      {/* 2. SFX TRANSISI WHOOSH PER BABAK */}
       <Sequence from={235} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+        <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
       </Sequence>
       <Sequence from={595} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+        <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
       </Sequence>
       <Sequence from={1015} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+        <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
       </Sequence>
       <Sequence from={1255} durationInFrames={35}>
-        <Audio src={staticFile('whoosh.mp3')} volume={0.3} />
+        <Audio src={staticFile('whoosh.mp3')} volume={0.25} />
+      </Sequence>
+
+      {/* 3. SFX AKSI MEKANIS PER BABAK */}
+      {/* Babak 1: Tetesan Getah Berkala */}
+      <Sequence from={24} durationInFrames={20}>
+        <Audio src={staticFile('water_drop.mp3')} volume={0.25} />
+      </Sequence>
+      <Sequence from={54} durationInFrames={20}>
+        <Audio src={staticFile('water_drop.mp3')} volume={0.25} />
+      </Sequence>
+      <Sequence from={84} durationInFrames={20}>
+        <Audio src={staticFile('water_drop.mp3')} volume={0.25} />
+      </Sequence>
+      <Sequence from={114} durationInFrames={20}>
+        <Audio src={staticFile('water_drop.mp3')} volume={0.25} />
+      </Sequence>
+
+      {/* Babak 2: Tuangan Bubuk Belerang & Karbon */}
+      <Sequence from={250} durationInFrames={70}>
+        <Audio src={staticFile('pour_powder.mp3')} volume={0.35} />
+      </Sequence>
+
+      {/* Babak 3: Dentang Lempengan Logam Baja */}
+      <Sequence from={615} durationInFrames={40}>
+        <Audio src={staticFile('metal_clank.mp3')} volume={0.4} />
+      </Sequence>
+
+      {/* Babak 4: Hantaman Pres Hidrolik & Desisan Panas */}
+      <Sequence from={1130} durationInFrames={45}>
+        <Audio src={staticFile('hydraulic_press.mp3')} volume={0.55} />
+      </Sequence>
+      <Sequence from={1135} durationInFrames={65}>
+        <Audio src={staticFile('steam_hiss.mp3')} volume={0.35} />
+      </Sequence>
+
+      {/* Babak 5: Deru Mesin Truk & Beep Penguncian HUD */}
+      <Sequence from={1260} durationInFrames={90}>
+        <Audio src={staticFile('truck_engine.mp3')} volume={0.3} />
+      </Sequence>
+      <Sequence from={1380} durationInFrames={45}>
+        <Audio src={staticFile('digital_success.mp3')} volume={0.4} />
       </Sequence>
 
       {/* BACKGROUND GRID */}
@@ -537,8 +581,7 @@ export const ExplainerStyle: React.FC = () => {
             </div>
           </div>
         )}
-
-                {/* BABAK 3: PENAMPANG LAPISAN KAWAT BAJA */}
+        {/* BABAK 3: PENAMPANG LAPISAN KAWAT BAJA */}
         {activeIndex === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
@@ -840,8 +883,7 @@ export const ExplainerStyle: React.FC = () => {
             </div>
           </div>
         )}
-
-                {/* BABAK 5: TRUK MUATAN BERAT & CLOSE-UP BAN (CENTER FOCUS) */}
+        {/* BABAK 5: TRUK MUATAN BERAT & CLOSE-UP BAN (CENTER FOCUS) */}
         {activeIndex === 4 && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
