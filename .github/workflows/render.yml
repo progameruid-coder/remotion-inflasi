@@ -20,10 +20,10 @@ jobs:
         run: npm install
 
       - name: Render Video MP4
-        run: npm run build
+        run: npx remotion render MouseExplainer out/mouse-video.mp4
 
       - name: Simpan Hasil Video
         uses: actions/upload-artifact@v4
         with:
-          name: video-inflasi-mp4
-          path: out/inflasi-video.mp4
+          name: video-mouse-mp4
+          path: out/mouse-video.mp4
